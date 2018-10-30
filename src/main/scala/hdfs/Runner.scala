@@ -7,7 +7,7 @@ import scala.collection.{immutable, mutable}
 /**
   * The entry point object of the program.
   */
-object Main extends App {
+object Runner {
 
   /**
     * This object provides constants for parsing input.
@@ -131,8 +131,7 @@ object Main extends App {
     *
     * @param args command line args.
     */
-  override
-  def main(args: Array[String]): Unit = {
+  def run(args: Array[String]): Unit = {
     try {
       val argMap = processArgs(args)
 
