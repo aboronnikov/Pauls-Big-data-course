@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage ('Compile Stage') {
             steps {
-                sh '/bin/sbtnocolor compile, package, publish'
+                sh '/bin/sbtnocolor compile,package,publish'
             }
         }
     }
