@@ -14,6 +14,28 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbt: org.slf4j:slf4j-log4j12:1.7.25:jar" level="project" />
+    <orderEntry type="library" name="sbt: xmlenc:xmlenc:0.52:jar" level="project" />
+    <orderEntry type="library" name="sbt: tomcat:jasper-runtime:5.5.12:jar" level="project" />
+    <orderEntry type="library" name="sbt: tomcat:jasper-compiler:5.5.12:jar" level="project" />
+    <orderEntry type="library" name="sbt: oro:oro:2.0.8:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mortbay.jetty:servlet-api-2.5:6.1.14:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mortbay.jetty:servlet-api:2.5-20081211:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mortbay.jetty:jsp-api-2.1:6.1.14:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mortbay.jetty:jsp-2.1:6.1.14:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mortbay.jetty:jetty-util:6.1.26:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.mortbay.jetty:jetty:6.1.26:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.eclipse.jdt:core:3.1.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.hadoop:hadoop-core:1.2.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.commons:commons-math:2.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: net.java.dev.jets3t:jets3t:0.6.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: junit:junit:3.8.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: hsqldb:hsqldb:1.8.0.10:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-httpclient:commons-httpclient:3.0.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-el:commons-el:1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-digester:commons-digester:1.8:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-configuration:commons-configuration:1.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-beanutils:commons-beanutils-core:1.8.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: ant:ant:1.6.5:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="sbt: org.scalacheck:scalacheck_2.12:1.14.0:jar" level="project" />
     <orderEntry type="library" scope="TEST" name="sbt: org.scala-sbt:test-interface:1.0:jar" level="project" />
     <orderEntry type="library" name="sbt: org.xerial.snappy:snappy-java:1.1.2.6:jar" level="project" />
