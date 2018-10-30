@@ -45,6 +45,7 @@ libraryDependencies ++= Seq(
 
 publishTo := Some(Resolver.sftp("Server", "ecsc00a022c6.epam.com", "22"))
 
+
 //assemblyMergeStrategy in assembly := {
 //  case PathList("META-INF") => sbtassembly.MergeStrategy.discard
 //  case x => sbtassembly.MergeStrategy.first

@@ -3,8 +3,8 @@ pipeline {
 
     stages {
         stage ('Compile Stage') {
-            steps {
-                sh 'sbt compile, package, publish'
+            ansiColor('xterm') {
+                sbt compile, package, publish
             }
         }
     }
