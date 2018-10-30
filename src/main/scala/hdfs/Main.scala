@@ -145,8 +145,7 @@ object Main extends App {
       val newFileName = argMap(ArgConstants.NEW_FILE_PATH_ARG)
       val csvSeparator = argMap(ArgConstants.CSV_SEPARATOR_ARG)
 
-      val csvToParquetConverter = new CsvToParquetConverter(schemaFilePath, csvFilePath, newFileName, csvSeparator)
-      csvToParquetConverter.convertAndSaveAsANewFile()
+      CsvToParquetConverter.convertAndSaveAsANewFile(schemaFilePath, csvFilePath, newFileName, csvSeparator)
 
       println(FeedbackMessageConstants.SUCCESS_MESSAGE)
     } catch {

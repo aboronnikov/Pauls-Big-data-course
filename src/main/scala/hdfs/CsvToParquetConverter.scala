@@ -20,13 +20,13 @@ import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName
   * @param newFilePath    the name of the new file that will be created.
   * @param csvSeparator   separator between csv row values.
   */
-class CsvToParquetConverter(val schemaFilePath: String, val csvFilePath: String, val newFilePath: String, val csvSeparator: String) {
+object CsvToParquetConverter {
   /**
     * Helper function that reads schema from the schema file.
     *
     * @return schema, read from the specified file.
     */
-  private def readSchema(): String = {
+  private def readSchema(schemaFilePath: String): String = {
     val schemaReader = new BufferedReader(new InputStreamReader(new FileInputStream(schemaFilePath)))
     val schema = new StringBuilder
     var line = schemaReader.readLine()
@@ -41,8 +41,8 @@ class CsvToParquetConverter(val schemaFilePath: String, val csvFilePath: String,
   /**
     * The main function of this utility that converts csv to parquet format.
     */
-  def convertAndSaveAsANewFile(): Unit = {
-    val schema = MessageTypeParser.parseMessageType(readSchema())
+  def convertAndSaveAsANewFile(schemaFilePath: String, csvFilePath: String, newFilePath: String, csvSeparator: String): Unit = {
+    val schema = MessageTypeParser.parseMessageType(readSchema(schemaFilePath))
     val config = new Configuration
     val path = new Path(newFilePath)
     val writeSupport = new GroupWriteSupport

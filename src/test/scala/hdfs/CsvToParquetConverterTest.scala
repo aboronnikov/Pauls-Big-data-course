@@ -75,8 +75,7 @@ class CsvToParquetConverterTest extends JUnitSuite {
     */
   @Test
   def convertAndSaveAsANewFileTest(): Unit = {
-    val csvToParquetConverter = new CsvToParquetConverter(SCHEMA_FILE_NAME, CSV_FILE_NAME, PARQUET_FILE_NAME, ",")
-    csvToParquetConverter.convertAndSaveAsANewFile()
+    CsvToParquetConverter.convertAndSaveAsANewFile(SCHEMA_FILE_NAME, CSV_FILE_NAME, PARQUET_AUX_FILE_NAME, ",")
     val readSupport = new GroupReadSupport
     val path = new Path(PARQUET_FILE_NAME)
     val reader = new ParquetReader[Group](path, readSupport)
