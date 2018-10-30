@@ -1,4 +1,4 @@
-import org.apache.logging.log4j.core.config.composite.MergeStrategy
+import sbtassembly.MergeStrategy
 import sbt.io.Using
 import sun.security.tools.PathList
 
@@ -43,9 +43,11 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % "2.12.7"
 )
 
+publishTo := Some(Resolver.sftp("Server", "ecsc00a022c6.epam.com", "22"))
+
 //assemblyMergeStrategy in assembly := {
-//  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-//  case x => MergeStrategy.first
+//  case PathList("META-INF") => sbtassembly.MergeStrategy.discard
+//  case x => sbtassembly.MergeStrategy.first
 //}
 
 // META-INF discarding
