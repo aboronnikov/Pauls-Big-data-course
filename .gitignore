@@ -11,3 +11,4 @@ sbt__*.xml
 *.parquet
 *.crc
 *.txt
+*.temp

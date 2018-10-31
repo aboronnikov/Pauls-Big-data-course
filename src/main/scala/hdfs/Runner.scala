@@ -51,10 +51,6 @@ object Runner {
     */
   private object ExecutionCaseConstants {
     /**
-      * User asked for help, in that case he must provide only 1 argument.
-      */
-    val HelpCase = 1
-    /**
       * User knows how to use the program and provided all the necessary 4 arguments.
       */
     val NormalCase = 4
@@ -94,38 +90,19 @@ object Runner {
 
   /**
     * Processes arguments specified on command line.
+    * If this function returns a map with ExecutionCaseConstants.NormalCase number of elements
+    * then schemaFilePath, csvFilePath, newFileName, csvSeparator are in there.
     *
     * @param args the arguments specified.
     * @return the map with the processed arguments
     */
-  private def processArgs(args: Array[String]): mutable.HashMap[String, String] = {
-    val resultMap = new mutable.HashMap[String, String]
-
-    /*
-    If 4 arguments are passed, then they must be from the POSSIBLE_ARGS set.
-     */
-    if (args.length == ExecutionCaseConstants.NormalCase) {
-      for (arg <- args) {
-        val keyAndVal = arg.split(ArgConstants.KeyValueArgSeparator)
-        if (keyAndVal.size != 2 && !ArgConstants.PossibleArgs.contains(keyAndVal(0))) {
-          throw new IllegalArgumentException
-        }
-        resultMap(keyAndVal(0)) = keyAndVal(1)
-      }
-    }
-    /*
-    If only one argument is passed, then it can only be "-help"
-     */
-    else if (args.length == ExecutionCaseConstants.HelpCase && args(0).equals(ArgConstants.HelpArg)) {
-      println(FeedbackMessageConstants.HelpMessage)
-    }
-    /*
-    If the above 2 cases don't work out, then the arguments passed to this program are illegal.
-     */
-    else {
-      throw new IllegalArgumentException
-    }
-    resultMap
+  private def processArgs(args: Array[String]): immutable.Map[String, String] = {
+    args
+      .filter(arg => arg.contains(ArgConstants.KeyValueArgSeparator))
+      .map(arg => arg.split(ArgConstants.KeyValueArgSeparator))
+      .filter(keyValue => ArgConstants.PossibleArgs.contains(keyValue(0)))
+      .map(keyValue => keyValue(0) -> keyValue(1))
+      .toMap
   }
 
   /**
@@ -137,23 +114,24 @@ object Runner {
     try {
       val argMap = processArgs(args)
 
-      if (argMap.isEmpty) {
-        return
+      if (argMap.size == ExecutionCaseConstants.NormalCase) {
+        val schemaFilePath = argMap(ArgConstants.SchemaPathArg)
+        val csvFilePath = argMap(ArgConstants.CsvPathArg)
+        val newFileName = argMap(ArgConstants.NewFilePathArg)
+        val csvSeparator = argMap(ArgConstants.CsvSeparatorArg)
+
+        CsvToParquetConverter.convertAndSaveAsANewFile(schemaFilePath, csvFilePath, newFileName, csvSeparator)
+
+        println(FeedbackMessageConstants.SuccessMessage)
+      } else if (argMap.contains(ArgConstants.HelpArg)) {
+        println(FeedbackMessageConstants.HelpMessage)
+      } else {
+        println(FeedbackMessageConstants.BadArgsMessage)
       }
-
-      val schemaFilePath = argMap(ArgConstants.SchemaPathArg)
-      val csvFilePath = argMap(ArgConstants.CsvPathArg)
-      val newFileName = argMap(ArgConstants.NewFilePathArg)
-      val csvSeparator = argMap(ArgConstants.CsvSeparatorArg)
-
-      CsvToParquetConverter.convertAndSaveAsANewFile(schemaFilePath, csvFilePath, newFileName, csvSeparator)
-
-      println(FeedbackMessageConstants.SuccessMessage)
     } catch {
-      case e: NumberFormatException    => println(FeedbackMessageConstants.BadNumberFormatMessage); println(e.getMessage)
-      case e: IllegalArgumentException => println(FeedbackMessageConstants.BadArgsMessage); println(e.getMessage)
-      case e: IOException              => println(FeedbackMessageConstants.IOErrorMessage); println(e.getMessage)
-      case e: Exception                => println(FeedbackMessageConstants.UnknownProblemMessage); println(e.getMessage)
+      case e: NumberFormatException => println(FeedbackMessageConstants.BadNumberFormatMessage); println(e.getMessage)
+      case e: IOException => println(FeedbackMessageConstants.IOErrorMessage); println(e.getMessage)
+      case e: Exception => println(FeedbackMessageConstants.UnknownProblemMessage); println(e.getMessage)
     }
   }
 }

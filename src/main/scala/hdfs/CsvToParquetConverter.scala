@@ -11,16 +11,13 @@ import org.apache.parquet.example.data.Group
 import org.apache.parquet.example.data.simple.SimpleGroup
 import org.apache.parquet.hadoop.ParquetWriter
 import org.apache.parquet.hadoop.example.GroupWriteSupport
-import org.apache.parquet.schema.MessageTypeParser
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName
+import org.apache.parquet.schema.{MessageType, MessageTypeParser}
+
+import scala.io.Source
 
 /**
   * A file that converts csv to parquet format.
-  *
-  * @param schemaFilePath the path to the schema file.
-  * @param csvFilePath    the path to the csv file to read from.
-  * @param newFilePath    the name of the new file that will be created.
-  * @param csvSeparator   separator between csv row values.
   */
 object CsvToParquetConverter {
   /**
@@ -33,6 +30,32 @@ object CsvToParquetConverter {
     val result = fileStream.collect(Collectors.joining())
     fileStream.close()
     result
+  }
+
+  private def writeCorrectGroupValue(group: Group, value: String, fieldType: PrimitiveTypeName, fieldName: String): Unit = {
+    if (!value.isEmpty) {
+      fieldType match {
+        case PrimitiveTypeName.INT32 => group.append(fieldName, value.toInt)
+        case PrimitiveTypeName.INT64 => group.append(fieldName, value.toLong)
+        case PrimitiveTypeName.INT96 => group.append(fieldName, value)
+        case PrimitiveTypeName.DOUBLE => group.append(fieldName, value.toDouble)
+        case PrimitiveTypeName.FLOAT => group.append(fieldName, value.toFloat)
+        case PrimitiveTypeName.BINARY => group.append(fieldName, value)
+        case PrimitiveTypeName.BOOLEAN => group.append(fieldName, value.toBoolean)
+        case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY => group.append(fieldName, value)
+      }
+    }
+  }
+
+  private def formGroupFromALine(line: String, csvSeparator: String, schema: MessageType): Group = {
+    val group = new SimpleGroup(schema)
+    val values = line.split(csvSeparator)
+    IntStream.range(0, schema.getFieldCount).forEach(id => {
+      val fieldName = schema.getColumns.get(id).getPrimitiveType.getName
+      val fieldType = schema.getColumns.get(id).getPrimitiveType.getPrimitiveTypeName
+      writeCorrectGroupValue(group, values(id), fieldType, fieldName)
+    })
+    group
   }
 
   /**
@@ -62,29 +85,13 @@ object CsvToParquetConverter {
       config
     )
 
-    val fileStream = Files.lines(Paths.get(csvFilePath))// skip the first line
-    fileStream.skip(1).forEach(line => {
-      val group = new SimpleGroup(schema)
-      val values = line.split(csvSeparator)
-      IntStream.range(0, schema.getFieldCount).forEach(id => {
-        val fieldName = schema.getColumns.get(id).getPrimitiveType.getName
-        val fieldType = schema.getColumns.get(id).getPrimitiveType.getPrimitiveTypeName
-        if (!values(id).isEmpty) {
-          fieldType match {
-            case PrimitiveTypeName.INT32                => group.append(fieldName, values(id).toInt)
-            case PrimitiveTypeName.INT64                => group.append(fieldName, values(id).toLong)
-            case PrimitiveTypeName.INT96                => group.append(fieldName, values(id))
-            case PrimitiveTypeName.DOUBLE               => group.append(fieldName, values(id).toDouble)
-            case PrimitiveTypeName.FLOAT                => group.append(fieldName, values(id).toFloat)
-            case PrimitiveTypeName.BINARY               => group.append(fieldName, values(id))
-            case PrimitiveTypeName.BOOLEAN              => group.append(fieldName, values(id).toBoolean)
-            case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY => group.append(fieldName, values(id))
-          }
-        }
-      })
-      writer.write(group)
-    })
-    fileStream.close()
+    val bufferedSource = Source.fromFile(csvFilePath)
+    val fileStream = bufferedSource.getLines
+    fileStream
+      .drop(1)
+      .map(line => formGroupFromALine(line, csvSeparator, schema))
+      .foreach(group => writer.write(group))
+    bufferedSource.close()
     writer.close()
   }
 }
