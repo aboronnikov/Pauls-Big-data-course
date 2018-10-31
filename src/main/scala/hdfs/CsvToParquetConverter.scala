@@ -72,17 +72,18 @@ object CsvToParquetConverter {
     while (line != null) {
       val group = new SimpleGroup(schema)
       val values = line.split(csvSeparator)
-      for (id <- 0 until schema.getFieldCount) {
+      for {id <- 0 until schema.getFieldCount} {
         val fieldName = schema.getColumns.get(id).getPrimitiveType.getName
         val fieldType = schema.getColumns.get(id).getPrimitiveType.getPrimitiveTypeName
         if (!values(id).isEmpty) {
           fieldType match {
-            case PrimitiveTypeName.INT32 => group.append(fieldName, values(id).toInt)
-            case PrimitiveTypeName.INT64 => group.append(fieldName, values(id).toLong)
-            case PrimitiveTypeName.DOUBLE => group.append(fieldName, values(id).toDouble)
-            case PrimitiveTypeName.FLOAT => group.append(fieldName, values(id).toFloat)
-            case PrimitiveTypeName.BINARY => group.append(fieldName, values(id))
-            case PrimitiveTypeName.BOOLEAN => group.append(fieldName, values(id).toBoolean)
+            case PrimitiveTypeName.INT32                => group.append(fieldName, values(id).toInt)
+            case PrimitiveTypeName.INT64                => group.append(fieldName, values(id).toLong)
+            case PrimitiveTypeName.INT96                => group.append(fieldName, values(id))
+            case PrimitiveTypeName.DOUBLE               => group.append(fieldName, values(id).toDouble)
+            case PrimitiveTypeName.FLOAT                => group.append(fieldName, values(id).toFloat)
+            case PrimitiveTypeName.BINARY               => group.append(fieldName, values(id))
+            case PrimitiveTypeName.BOOLEAN              => group.append(fieldName, values(id).toBoolean)
             case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY => group.append(fieldName, values(id))
           }
         }

@@ -9,8 +9,10 @@ object Main extends App {
   def main(args: Array[String]): Unit = {
     if (args.length != 0) {
       args(0) match {
-        case Constants.HdfsHomework => hdfs.Runner.run(args.slice(1, args.length))
-        case default => println(Constants.DefaultMessage)
+        case Constants.HdfsHomework =>
+          val actualArgs = args.slice(1, args.length)
+          hdfs.Runner.run(actualArgs)
+        case _                      => println(Constants.DefaultMessage)
       }
     } else {
       println(Constants.DefaultMessage)
