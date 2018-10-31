@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage ('Compile Stage') {
             steps {
-                sh 'sbt assembly'
+                sh '/bin/sbtnocolor assembly'
             }
         }
     }
