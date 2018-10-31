@@ -43,6 +43,8 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % "2.12.7"
 )
 
+enablePlugins(JavaServerAppPackaging, UniversalDeployPlugin)
+
 publishTo := Some(Resolver.sftp("Server", "ecsc00a022c6.epam.com", "22"))
 
 
