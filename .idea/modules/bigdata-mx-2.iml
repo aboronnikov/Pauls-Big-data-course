@@ -14,66 +14,67 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="sbt: org.hamcrest:hamcrest-core:1.3:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.7:jar" level="project" />
-    <orderEntry type="library" name="sbt: junit:junit:3.8.1:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: org.scalacheck:scalacheck_2.12:1.14.0:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: org.scala-sbt:test-interface:1.0:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: org.scala-lang:scala-reflect:2.12.7:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: org.scala-lang.modules:scala-xml_2.12:1.0.6:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: org.scalactic:scalactic_2.12:3.2.0-SNAP10:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: org.scalatest:scalatest_2.12:3.2.0-SNAP10:jar" level="project" />
-    <orderEntry type="library" scope="TEST" name="sbt: junit:junit:4.12:jar" level="project" />
-    <orderEntry type="library" name="sbt: commons-codec:commons-codec:1.10:jar" level="project" />
-    <orderEntry type="library" name="sbt: commons-pool:commons-pool:1.6:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-column:1.10.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-common:1.10.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-encoding:1.10.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-format:2.4.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-hadoop:1.10.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-jackson:1.10.0:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.codehaus.jackson:jackson-core-asl:1.9.13:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.codehaus.jackson:jackson-mapper-asl:1.9.13:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:1.7.22:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.xerial.snappy:snappy-java:1.1.2.6:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: ant:ant:1.6.5:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: asm:asm:3.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.jersey:jersey-core:1.8:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.jersey:jersey-json:1.8:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.jersey:jersey-server:1.8:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.xml.bind:jaxb-impl:2.2.3-1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-beanutils:commons-beanutils:1.7.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-beanutils:commons-beanutils-core:1.8.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-cli:commons-cli:1.2:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-collections:commons-collections:3.2.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-configuration:commons-configuration:1.6:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-digester:commons-digester:1.8:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-el:commons-el:1.0:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-httpclient:commons-httpclient:3.0.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-io:commons-io:2.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-lang:commons-lang:2.4:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-logging:commons-logging:1.1.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-net:commons-net:1.4.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: hsqldb:hsqldb:1.8.0.10:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: javax.activation:activation:1.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: javax.xml.bind:jaxb-api:2.2.2:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: javax.xml.stream:stax-api:1.0-2:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: net.java.dev.jets3t:jets3t:0.6.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.apache.commons:commons-math:2.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.apache.hadoop:hadoop-core:1.2.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.codehaus.jackson:jackson-jaxrs:1.7.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.codehaus.jackson:jackson-xc:1.7.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.codehaus.jettison:jettison:1.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.eclipse.jdt:core:3.1.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jetty:6.1.26:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jetty-util:6.1.26:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jsp-2.1:6.1.14:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jsp-api-2.1:6.1.14:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:servlet-api:2.5-20081211:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:servlet-api-2.5:6.1.14:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: oro:oro:2.0.8:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: stax:stax-api:1.0.1:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: tomcat:jasper-compiler:5.5.12:jar" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="sbt: tomcat:jasper-runtime:5.5.12:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="sbt: xmlenc:xmlenc:0.52:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: tomcat:jasper-runtime:5.5.12:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: tomcat:jasper-compiler:5.5.12:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: stax:stax-api:1.0.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: oro:oro:2.0.8:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:servlet-api-2.5:6.1.14:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:servlet-api:2.5-20081211:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jsp-api-2.1:6.1.14:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jsp-2.1:6.1.14:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jetty-util:6.1.26:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.mortbay.jetty:jetty:6.1.26:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.eclipse.jdt:core:3.1.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.codehaus.jettison:jettison:1.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.codehaus.jackson:jackson-xc:1.7.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.codehaus.jackson:jackson-jaxrs:1.7.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.apache.hadoop:hadoop-core:1.2.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.apache.commons:commons-math:2.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: net.java.dev.jets3t:jets3t:0.6.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: javax.xml.stream:stax-api:1.0-2:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: javax.xml.bind:jaxb-api:2.2.2:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: javax.activation:activation:1.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: hsqldb:hsqldb:1.8.0.10:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-net:commons-net:1.4.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-logging:commons-logging:1.1.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-lang:commons-lang:2.4:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-io:commons-io:2.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-httpclient:commons-httpclient:3.0.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-el:commons-el:1.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-digester:commons-digester:1.8:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-configuration:commons-configuration:1.6:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-collections:commons-collections:3.2.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-cli:commons-cli:1.2:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-beanutils:commons-beanutils-core:1.8.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: commons-beanutils:commons-beanutils:1.7.0:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.xml.bind:jaxb-impl:2.2.3-1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.jersey:jersey-server:1.8:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.jersey:jersey-json:1.8:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: com.sun.jersey:jersey-core:1.8:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: asm:asm:3.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: ant:ant:1.6.5:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.xerial.snappy:snappy-java:1.1.2.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.slf4j:slf4j-api:1.7.22:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.codehaus.jackson:jackson-mapper-asl:1.9.13:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.codehaus.jackson:jackson-core-asl:1.9.13:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-jackson:1.10.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-hadoop:1.10.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-format:2.4.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-encoding:1.10.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-common:1.10.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.apache.parquet:parquet-column:1.10.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-pool:commons-pool:1.6:jar" level="project" />
+    <orderEntry type="library" name="sbt: commons-codec:commons-codec:1.10:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: junit:junit:4.12:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: org.scalatest:scalatest_2.12:3.2.0-SNAP10:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: org.scalactic:scalactic_2.12:3.2.0-SNAP10:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: org.scala-lang.modules:scala-xml_2.12:1.0.6:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: org.scala-lang:scala-reflect:2.12.7:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: org.scala-sbt:test-interface:1.0:jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="sbt: org.scalacheck:scalacheck_2.12:1.14.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: junit:junit:3.8.1:jar" level="project" />
+    <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.7:jar" level="project" />
+    <orderEntry type="library" name="scala-sdk-2.12.0" level="application" />
   </component>
 </module>

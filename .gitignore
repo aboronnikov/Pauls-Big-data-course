@@ -3,6 +3,8 @@
 *.log
 *.cache
 *.zip
+!*homework.zip
 *.tgz
 *.tmp
 *.jar
+sbt__*.xml
