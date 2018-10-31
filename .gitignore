@@ -3,6 +3,7 @@
 *.log
 *.cache
 *.zip
+!*Homework.zip
 !*homework.zip
 *.tgz
 *.tmp

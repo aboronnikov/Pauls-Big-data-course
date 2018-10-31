@@ -1,10 +1,8 @@
 package hdfs
 
 import java.io.IOException
-import java.util
-import java.util.stream.Collectors
 
-import scala.collection.{immutable, mutable}
+import scala.collection.immutable
 
 /**
   * The entry point object of the program.
