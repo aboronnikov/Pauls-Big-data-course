@@ -14,8 +14,3 @@ libraryDependencies ++= Seq(
   "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
   "org.scala-lang" % "scala-library" % "2.12.7"
 )
-
-//assemblyMergeStrategy in assembly := {
-//  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-//  case x => MergeStrategy.first
-//}
