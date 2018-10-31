@@ -2,3 +2,6 @@
 *.class
 *.log
 *.cache
+*.zip
+*.tgz
+*.tmp
