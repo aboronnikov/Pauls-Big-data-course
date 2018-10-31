@@ -1,6 +1,6 @@
 package hdfs
 
-import java.io.{BufferedReader, FileInputStream, InputStreamReader}
+import java.io._
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
@@ -47,6 +47,11 @@ object CsvToParquetConverter {
     val path = new Path(newFilePath)
     val writeSupport = new GroupWriteSupport
     GroupWriteSupport.setSchema(schema, config)
+
+    if (new File(newFilePath).exists()) {
+      throw new IOException(newFilePath + ".parquet already exists")
+    }
+
     val writer = new ParquetWriter[Group](
       path,
       writeSupport,

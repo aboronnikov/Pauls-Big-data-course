@@ -66,7 +66,7 @@ object Runner {
       * This is a help message to be displayed to the user.
       */
     val HELP_MESSAGE = "You have 2 options with this program:\n" +
-      "1) Specify all 4 of 1) -schemaPath, 2) -csvPath, 3) -newFileName, 4) -csvSeparator\n" +
+      "1) Specify all 4 of 1) -schemaPath, 2) -csvPath, 3) -newFilePath, 4) -csvSeparator\n" +
       "2) Ask for help with -help\n"
     /**
       * This is the bad arguments message to be displayed to the user.
@@ -148,10 +148,10 @@ object Runner {
 
       println(FeedbackMessageConstants.SUCCESS_MESSAGE)
     } catch {
-      case e: NumberFormatException => println(FeedbackMessageConstants.BAD_NUMBER_FORMAT_MESSAGE)
-      case e: IllegalArgumentException => println(FeedbackMessageConstants.BAD_ARGS_MESSAGE)
-      case e: IOException => println(FeedbackMessageConstants.IO_ERROR_MESSAGE)
-      case e: Exception => println(FeedbackMessageConstants.UNKNOWN_PROBLEM_MESSAGE)
+      case e: NumberFormatException => println(FeedbackMessageConstants.BAD_NUMBER_FORMAT_MESSAGE); println(e.getMessage)
+      case e: IllegalArgumentException => println(FeedbackMessageConstants.BAD_ARGS_MESSAGE); println(e.getMessage)
+      case e: IOException => println(FeedbackMessageConstants.IO_ERROR_MESSAGE); println(e.getMessage)
+      case e: Exception => println(FeedbackMessageConstants.UNKNOWN_PROBLEM_MESSAGE); println(e.getMessage)
     }
   }
 }

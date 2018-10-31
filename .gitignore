@@ -8,3 +8,6 @@
 *.tmp
 *.jar
 sbt__*.xml
+*.parquet
+*.crc
+*.txt
