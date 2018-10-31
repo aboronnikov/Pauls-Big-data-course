@@ -1,6 +1,8 @@
 package hdfs
 
 import java.io._
+import java.nio.file.{Files, Paths}
+import java.util.stream.{Collectors, IntStream}
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
@@ -27,15 +29,10 @@ object CsvToParquetConverter {
     * @return schema, read from the specified file.
     */
   private def readSchema(schemaFilePath: String): String = {
-    val schemaReader = new BufferedReader(new InputStreamReader(new FileInputStream(schemaFilePath)))
-    val schema = new StringBuilder
-    var line = schemaReader.readLine()
-    while (line != null) {
-      schema.append(line)
-      line = schemaReader.readLine()
-    }
-    schemaReader.close()
-    schema.toString
+    val fileStream = Files.lines(Paths.get(schemaFilePath))
+    val result = fileStream.collect(Collectors.joining())
+    fileStream.close()
+    result
   }
 
   /**
@@ -65,14 +62,11 @@ object CsvToParquetConverter {
       config
     )
 
-    val csvReader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFilePath)))
-    var line = csvReader.readLine // skip the first line
-    line = csvReader.readLine
-
-    while (line != null) {
+    val fileStream = Files.lines(Paths.get(csvFilePath))// skip the first line
+    fileStream.skip(1).forEach(line => {
       val group = new SimpleGroup(schema)
       val values = line.split(csvSeparator)
-      for {id <- 0 until schema.getFieldCount} {
+      IntStream.range(0, schema.getFieldCount).forEach(id => {
         val fieldName = schema.getColumns.get(id).getPrimitiveType.getName
         val fieldType = schema.getColumns.get(id).getPrimitiveType.getPrimitiveTypeName
         if (!values(id).isEmpty) {
@@ -87,11 +81,10 @@ object CsvToParquetConverter {
             case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY => group.append(fieldName, values(id))
           }
         }
-      }
-      line = csvReader.readLine
+      })
       writer.write(group)
-    }
+    })
+    fileStream.close()
     writer.close()
-    csvReader.close()
   }
 }
