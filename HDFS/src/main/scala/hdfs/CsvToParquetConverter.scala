@@ -17,14 +17,14 @@ import org.apache.parquet.schema.{MessageType, MessageTypeParser}
 import scala.io.Source
 
 /**
-  * A file that converts csv to parquet format.
-  */
+ * A file that converts csv to parquet format.
+ */
 object CsvToParquetConverter {
   /**
-    * Helper function that reads schema from the schema file.
-    *
-    * @return schema, read from the specified file.
-    */
+   * Helper function that reads schema from the schema file.
+   *
+   * @return schema, read from the specified file.
+   */
   private def readSchema(schemaFilePath: String): String = {
     val fileStream = Files.lines(Paths.get(schemaFilePath))
     val result = fileStream.collect(Collectors.joining())
@@ -35,13 +35,13 @@ object CsvToParquetConverter {
   private def writeCorrectGroupValue(group: Group, value: String, fieldType: PrimitiveTypeName, fieldName: String): Unit = {
     if (!value.isEmpty) {
       fieldType match {
-        case PrimitiveTypeName.INT32 => group.append(fieldName, value.toInt)
-        case PrimitiveTypeName.INT64 => group.append(fieldName, value.toLong)
-        case PrimitiveTypeName.INT96 => group.append(fieldName, value)
-        case PrimitiveTypeName.DOUBLE => group.append(fieldName, value.toDouble)
-        case PrimitiveTypeName.FLOAT => group.append(fieldName, value.toFloat)
-        case PrimitiveTypeName.BINARY => group.append(fieldName, value)
-        case PrimitiveTypeName.BOOLEAN => group.append(fieldName, value.toBoolean)
+        case PrimitiveTypeName.INT32                => group.append(fieldName, value.toInt)
+        case PrimitiveTypeName.INT64                => group.append(fieldName, value.toLong)
+        case PrimitiveTypeName.INT96                => group.append(fieldName, value)
+        case PrimitiveTypeName.DOUBLE               => group.append(fieldName, value.toDouble)
+        case PrimitiveTypeName.FLOAT                => group.append(fieldName, value.toFloat)
+        case PrimitiveTypeName.BINARY               => group.append(fieldName, value)
+        case PrimitiveTypeName.BOOLEAN              => group.append(fieldName, value.toBoolean)
         case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY => group.append(fieldName, value)
       }
     }
@@ -59,8 +59,8 @@ object CsvToParquetConverter {
   }
 
   /**
-    * The main function of this utility that converts csv to parquet format.
-    */
+   * The main function of this utility that converts csv to parquet format.
+   */
   def convertAndSaveAsANewFile(schemaFilePath: String, csvFilePath: String, newFilePath: String, csvSeparator: String): Unit = {
     val schema = MessageTypeParser.parseMessageType(readSchema(schemaFilePath))
     val config = new Configuration
@@ -69,7 +69,7 @@ object CsvToParquetConverter {
     GroupWriteSupport.setSchema(schema, config)
 
     if (new File(newFilePath).exists()) {
-      throw new IOException(newFilePath + ".parquet already exists")
+      throw new IOException(newFilePath + ".parquet already exists.")
     }
 
     val writer = new ParquetWriter[Group](
@@ -88,7 +88,7 @@ object CsvToParquetConverter {
     val bufferedSource = Source.fromFile(csvFilePath)
     val fileStream = bufferedSource.getLines
     fileStream
-      .drop(1)
+      .drop(1) // skip the first line
       .map(line => formGroupFromALine(line, csvSeparator, schema))
       .foreach(group => writer.write(group))
     bufferedSource.close()

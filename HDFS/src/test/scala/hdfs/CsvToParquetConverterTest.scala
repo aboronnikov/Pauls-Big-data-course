@@ -32,7 +32,7 @@ class CsvToParquetConverterTest extends JUnitSuite {
   }
 
   /**
-    * Creates a parquet schema for the csv file from above.
+    * Creates a parquet schema for the csv file from  above.
     */
   private def setUpSchema(): Unit = {
     val writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(SCHEMA_FILE_NAME)))
