@@ -1,6 +1,6 @@
-package hdfs
+package hdfs.converter
 
-import java.io._
+import java.io.{File, IOException}
 import java.nio.file.{Files, Paths}
 import java.util.stream.{Collectors, IntStream}
 
@@ -21,6 +21,11 @@ import scala.io.Source
  */
 object CsvToParquetConverter {
   /**
+   * Number of lines to skip, when processing the csv file.
+   */
+  val NumberOfLinesToSkip = 1
+
+  /**
    * Helper function that reads schema from the schema file.
    *
    * @return schema, read from the specified file.
@@ -32,8 +37,15 @@ object CsvToParquetConverter {
     result
   }
 
+  /**
+   * Write a field in a csv file to a field in a group.
+   * @param group group
+   * @param value value to write
+   * @param fieldType type of the field, according to the schema
+   * @param fieldName name of the field from the schema
+   */
   private def writeCorrectGroupValue(group: Group, value: String, fieldType: PrimitiveTypeName, fieldName: String): Unit = {
-    if (!value.isEmpty) {
+    if (value.nonEmpty) {
       fieldType match {
         case PrimitiveTypeName.INT32                => group.append(fieldName, value.toInt)
         case PrimitiveTypeName.INT64                => group.append(fieldName, value.toLong)
@@ -47,6 +59,13 @@ object CsvToParquetConverter {
     }
   }
 
+  /**
+   * Creates a group from a line in a csv file.
+   * @param line line from the csv file
+   * @param csvSeparator separator, that separates values in the csv file
+   * @param schema schema of the csv and the parquet files
+   * @return group created from a line.
+   */
   private def formGroupFromALine(line: String, csvSeparator: String, schema: MessageType): Group = {
     val group = new SimpleGroup(schema)
     val values = line.split(csvSeparator)
@@ -88,7 +107,7 @@ object CsvToParquetConverter {
     val bufferedSource = Source.fromFile(csvFilePath)
     val fileStream = bufferedSource.getLines
     fileStream
-      .drop(1) // skip the first line
+      .drop(NumberOfLinesToSkip) // skip the first line
       .map(line => formGroupFromALine(line, csvSeparator, schema))
       .foreach(group => writer.write(group))
     bufferedSource.close()

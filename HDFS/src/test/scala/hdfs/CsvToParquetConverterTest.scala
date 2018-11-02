@@ -2,6 +2,7 @@ package hdfs
 
 import java.io.{BufferedWriter, File, FileOutputStream, OutputStreamWriter}
 
+import hdfs.converter.CsvToParquetConverter
 import org.junit.{After, Assert, Before, Test}
 import org.apache.hadoop.fs.Path
 import org.apache.parquet.example.data.Group
