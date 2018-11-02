@@ -1,7 +1,7 @@
 package hdfs
 import java.io._
-import hdfs.converter.CsvToParquetConverter
-import hdfs.inputprocessor.{ArgConstants, ExecutionCaseConstants, Runner}
+import com.epam.hdfs.converter.CsvToParquetConverter
+import com.epam.hdfs.inputprocessor.{ArgConstants, ExecutionCaseConstants, Runner}
 import org.apache.hadoop.fs.Path
 import org.apache.parquet.example.data.Group
 import org.apache.parquet.hadoop.ParquetReader

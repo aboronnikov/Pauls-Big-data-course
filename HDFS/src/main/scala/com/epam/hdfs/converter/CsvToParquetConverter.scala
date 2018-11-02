@@ -1,8 +1,8 @@
-package hdfs.converter
+package com.epam.hdfs.converter
 import java.io.{File, IOException}
 import java.nio.file.{Files, Paths}
 import java.util.stream.{Collectors, IntStream}
-import hdfs.inputprocessor.ArgConstants
+import com.epam.hdfs.inputprocessor.ArgConstants
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.parquet.column.ParquetProperties

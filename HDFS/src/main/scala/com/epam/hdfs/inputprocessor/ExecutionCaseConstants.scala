@@ -1,4 +1,4 @@
-package hdfs.inputprocessor
+package com.epam.hdfs.inputprocessor
 
 /**
  * This class provides constants for execution cases.

@@ -1,12 +1,12 @@
-package hdfs.inputprocessor
+package com.epam.hdfs.inputprocessor
 import java.io.IOException
-import hdfs.converter.CsvToParquetConverter
+import com.epam.hdfs.converter.CsvToParquetConverter
 import scala.collection.immutable
 
 /**
  * The entry point object of the program.
  */
-object Runner {
+object Runner extends App {
 
   /**
    * Processes arguments specified on command line.
@@ -54,6 +54,7 @@ object Runner {
    *
    * @param args command line args.
    */
+  override
   def main(args: Array[String]): Unit = {
     try {
       val processingResult = checkForNormalCase(args)

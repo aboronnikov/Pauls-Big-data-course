@@ -13,4 +13,5 @@ sbt__*.xml
 *.crc
 *.txt
 *.temp
+.idea/*
 */.idea/*
