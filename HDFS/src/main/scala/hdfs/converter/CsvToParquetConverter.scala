@@ -1,9 +1,8 @@
 package hdfs.converter
-
 import java.io.{File, IOException}
 import java.nio.file.{Files, Paths}
 import java.util.stream.{Collectors, IntStream}
-
+import hdfs.inputprocessor.ArgConstants
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.parquet.column.ParquetProperties
@@ -13,7 +12,7 @@ import org.apache.parquet.hadoop.ParquetWriter
 import org.apache.parquet.hadoop.example.GroupWriteSupport
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName
 import org.apache.parquet.schema.{MessageType, MessageTypeParser}
-
+import scala.collection.immutable
 import scala.io.Source
 
 /**
@@ -39,8 +38,9 @@ object CsvToParquetConverter {
 
   /**
    * Write a field in a csv file to a field in a group.
-   * @param group group
-   * @param value value to write
+   *
+   * @param group     group
+   * @param value     value to write
    * @param fieldType type of the field, according to the schema
    * @param fieldName name of the field from the schema
    */
@@ -61,9 +61,10 @@ object CsvToParquetConverter {
 
   /**
    * Creates a group from a line in a csv file.
-   * @param line line from the csv file
+   *
+   * @param line         line from the csv file
    * @param csvSeparator separator, that separates values in the csv file
-   * @param schema schema of the csv and the parquet files
+   * @param schema       schema of the csv and the parquet files
    * @return group created from a line.
    */
   private def formGroupFromALine(line: String, csvSeparator: String, schema: MessageType): Group = {
@@ -80,7 +81,12 @@ object CsvToParquetConverter {
   /**
    * The main function of this utility that converts csv to parquet format.
    */
-  def convertAndSaveAsANewFile(schemaFilePath: String, csvFilePath: String, newFilePath: String, csvSeparator: String): Unit = {
+  def convertAndSaveAsANewFile(argumentMap: immutable.Map[String, String]): Unit = {
+    val schemaFilePath = argumentMap(ArgConstants.SchemaPathArg)
+    val csvFilePath = argumentMap(ArgConstants.CsvPathArg)
+    val newFilePath = argumentMap(ArgConstants.NewFilePathArg)
+    val csvSeparator = argumentMap(ArgConstants.CsvSeparatorArg)
+
     val schema = MessageTypeParser.parseMessageType(readSchema(schemaFilePath))
     val config = new Configuration
     val path = new Path(newFilePath)

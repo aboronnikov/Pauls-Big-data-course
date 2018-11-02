@@ -1,5 +1,4 @@
 package hdfs.inputprocessor
-
 import scala.collection.immutable
 
 /**

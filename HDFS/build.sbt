@@ -1,7 +1,7 @@
 name := "HDFS"
 version := "0.1"
 scalaVersion := "2.12.7"
-mainClass in Compile := Some("Main")
+mainClass in Compile := Some("inputprocessor.Runner")
 assemblyJarName in assembly := "program.jar"
 
 libraryDependencies ++= Seq(

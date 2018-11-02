@@ -1,9 +1,6 @@
 package hdfs.inputprocessor
-
 import java.io.IOException
-
 import hdfs.converter.CsvToParquetConverter
-
 import scala.collection.immutable
 
 /**
@@ -23,9 +20,33 @@ object Runner {
     args
       .filter(arg => arg.contains(ArgConstants.KeyValueArgSeparator))
       .map(arg => arg.split(ArgConstants.KeyValueArgSeparator))
-      .filter(keyValue => {val key = keyValue(0); ArgConstants.PossibleArgs.contains(key)})
-      .map(keyValue => {val key = keyValue(0); val value = keyValue(1); key -> value})
+      .filter(keyValue => {
+        val key = keyValue(0); ArgConstants.PossibleArgs.contains(key)
+      })
+      .map(keyValue => {
+        val key = keyValue(0); val value = keyValue(1); key -> value
+      })
       .toMap
+  }
+
+  /**
+   * Checks if the user specified all the necessary arguments from ArgConstants.PossibleArgs.
+   *
+   * @param args cmd args
+   * @return case id and argument map.
+   */
+  def checkForNormalCase(args: Array[String]): (Int, immutable.Map[String, String]) = {
+    val argMap = processArgs(args)
+
+    if (args.contains(ArgConstants.HelpArg)) {
+      println(FeedbackMessageConstants.HelpMessage)
+      (ExecutionCaseConstants.HelpOrBadArgsCase, immutable.Map.empty)
+    } else if (argMap.size != ExecutionCaseConstants.NormalCase) {
+      println(FeedbackMessageConstants.BadArgsMessage)
+      (ExecutionCaseConstants.HelpOrBadArgsCase, immutable.Map.empty)
+    } else {
+      (ExecutionCaseConstants.NormalCase, argMap)
+    }
   }
 
   /**
@@ -35,21 +56,13 @@ object Runner {
    */
   def main(args: Array[String]): Unit = {
     try {
-      val argMap = processArgs(args)
+      val processingResult = checkForNormalCase(args)
+      val executionCase = processingResult._1
+      val argumentMap = processingResult._2
 
-      if (argMap.size == ExecutionCaseConstants.NormalCase) {
-        val schemaFilePath = argMap(ArgConstants.SchemaPathArg)
-        val csvFilePath = argMap(ArgConstants.CsvPathArg)
-        val newFileName = argMap(ArgConstants.NewFilePathArg)
-        val csvSeparator = argMap(ArgConstants.CsvSeparatorArg)
-
-        CsvToParquetConverter.convertAndSaveAsANewFile(schemaFilePath, csvFilePath, newFileName, csvSeparator)
-
+      if (executionCase == ExecutionCaseConstants.NormalCase) {
+        CsvToParquetConverter.convertAndSaveAsANewFile(argumentMap)
         println(FeedbackMessageConstants.SuccessMessage)
-      } else if (argMap.contains(ArgConstants.HelpArg)) {
-        println(FeedbackMessageConstants.HelpMessage)
-      } else {
-        println(FeedbackMessageConstants.BadArgsMessage)
       }
     } catch {
       case e: NumberFormatException => println(FeedbackMessageConstants.BadNumberFormatMessage); println(e.getMessage)
