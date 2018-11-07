@@ -7,9 +7,9 @@ scalaVersion := "2.12.7"
 mainClass in Compile := Some("Main")
 
 lazy val root = Project(id = "root", base = file(".")) aggregate(sparkTask1, sparkTask2, sparkTask3)
-lazy val sparkTask1 = Project(id = "hdfs", base = file("SparkTask1"))
-lazy val sparkTask2 = Project(id = "hdfs", base = file("SparkTask1"))
-lazy val sparkTask3 = Project(id = "hdfs", base = file("SparkTask1"))
+lazy val sparkTask1 = Project(id = "sparkTask1", base = file("SparkTask1"))
+lazy val sparkTask2 = Project(id = "sparkTask2", base = file("SparkTask2"))
+lazy val sparkTask3 = Project(id = "sparkTask3", base = file("SparkTask3"))
 
 coverageEnabled := true
 
@@ -20,3 +20,4 @@ assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.0"
