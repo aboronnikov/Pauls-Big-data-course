@@ -20,4 +20,6 @@ assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.0"
+libraryDependencies ++= Seq(
+  "org.apache.spark" %% "spark-core" % "2.4.0"
+)
