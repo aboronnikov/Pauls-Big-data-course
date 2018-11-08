@@ -5,7 +5,7 @@ import org.apache.spark.sql.types._
 /**
  * Class that solves task 1 of the spark module.
  */
-object Task1 extends App {
+object Task1 {
 
   /**
    * Schema for the train.csv file.
@@ -40,9 +40,10 @@ object Task1 extends App {
 
   /**
    * Builds the spark session for processing the dataset.
+   *
    * @return new SparkSession.
    */
-  def buildSession() : SparkSession = {
+  def buildSession(): SparkSession = {
     SparkSession.builder()
       .master("local[*]")
       .appName("SparkTask1")
@@ -51,11 +52,12 @@ object Task1 extends App {
 
   /**
    * Reads datafrom specified csv.
+   *
    * @param pathToTrainCsv path to the csv that you want to read from.
-   * @param spark current spark session.
+   * @param spark          current spark session.
    * @return DataFrame with data from csv.
    */
-  def readDataFrameFromCsv(pathToTrainCsv: String, spark: SparkSession) : DataFrame = {
+  def readDataFrameFromCsv(pathToTrainCsv: String, spark: SparkSession): DataFrame = {
     spark.read
       .option("header", "true")
       .format("csv")
@@ -64,27 +66,55 @@ object Task1 extends App {
   }
 
   /**
+   * Column name for the number of adults.
+   */
+  val SrchAdultsCnt = "srch_adults_cnt"
+
+  /**
+   * Column name for hotel country.
+   */
+  val HotelCountry = "hotel_country"
+
+  /**
+   * Column name for hotel market.
+   */
+  val HotelMarket = "hotel_market"
+
+  /**
+   * Column name for hotel continent.
+   */
+  val HotelContinent = "hotel_continent"
+
+  /**
+   * Column name for the count column.
+   */
+  val Count = "count"
+
+  /**
    * Calculates the dataset as per task1 specification.
+   *
    * @param df dataframe with data from csv.
    * @return Dataset of results.
    */
-  def calculateResults(df: DataFrame) : Dataset[Row] = {
-    df.filter(df("srch_adults_cnt") === 2)
-      .groupBy("hotel_country", "hotel_market", "hotel_continent")
-      .agg(count("*").alias("count"))
-      .orderBy(desc("count"))
+  def calculateResults(df: DataFrame): Dataset[Row] = {
+    df.filter(df(SrchAdultsCnt) === 2)
+      .groupBy(HotelCountry, HotelMarket, HotelContinent)
+      .agg(count("*").alias(Count))
+      .orderBy(desc(Count))
   }
 
   /**
    * Program's  entry point.
+   *
    * @param args cmd args.
    */
-  override def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     val spark = buildSession()
     val pathToTrainCsv = args(0)
     val df = readDataFrameFromCsv(pathToTrainCsv, spark)
     val dataset = calculateResults(df)
-    dataset.show(3)
+    val numberOfLinesToShow = 3
+    dataset.show(numberOfLinesToShow)
     spark.stop()
   }
 }

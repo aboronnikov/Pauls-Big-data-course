@@ -28,7 +28,7 @@ class Task1Test extends JUnitSuite {
     (2, 3, 3, 3),
     (2, 4, 4, 4),
     (2, 4, 4, 4)
-  ).toDF("srch_adults_cnt", "hotel_country", "hotel_market", "hotel_continent")
+  ).toDF(Task1.SrchAdultsCnt, Task1.HotelCountry, Task1.HotelMarket, Task1.HotelContinent)
 
   /**
    * A test, comparing the answer of 2,1,1,1 with whatever calculateResults produces.
@@ -36,8 +36,8 @@ class Task1Test extends JUnitSuite {
   @Test
   def calculateResultsTest(): Unit = {
     val dataset = Task1.calculateResults(dataFrame)
-    val expected = Array[Long](2,1,1,1)
-    val actual = dataset.select("count").as[Long].collect()
+    val expected = Array[Long](2, 1, 1, 1)
+    val actual = dataset.select(Task1.Count).as[Long].collect()
     Assert.assertArrayEquals(expected, actual)
   }
 
@@ -45,7 +45,7 @@ class Task1Test extends JUnitSuite {
    * This is a necessary procedure of stopping spark session to clean up resources.
    */
   @After
-  def tearDown() : Unit = {
+  def tearDown(): Unit = {
     spark.stop()
   }
 }
