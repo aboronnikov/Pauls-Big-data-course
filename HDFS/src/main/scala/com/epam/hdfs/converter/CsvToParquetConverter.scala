@@ -1,4 +1,5 @@
 package com.epam.hdfs.converter
+
 import java.io.{File, IOException}
 import java.nio.file.{Files, Paths}
 import java.util.stream.{Collectors, IntStream}
@@ -18,10 +19,6 @@ import resource.managed
  * A file that converts csv to parquet format.
  */
 object CsvToParquetConverter {
-  /**
-   * Number of lines to skip, when processing the csv file.
-   */
-  val NumberOfLinesToSkip = 1
 
   /**
    * Helper function that reads schema from the schema file.
@@ -78,24 +75,27 @@ object CsvToParquetConverter {
   }
 
   /**
-    * Lazily transforms the stream of lines from input into the stream of groups to be written to a file.
-    * @param stream stream of lines.
-    * @param csvSeparator separator used in csv.
-    * @param schema schema of data in csv.
-    * @return a stream of groups to be written to a file.
-    */
+   * Lazily transforms the stream of lines from input into the stream of groups to be written to a file.
+   *
+   * @param stream       stream of lines.
+   * @param csvSeparator separator used in csv.
+   * @param schema       schema of data in csv.
+   * @return a stream of groups to be written to a file.
+   */
   private def transformIntoGroupStream(stream: Iterator[String], csvSeparator: String, schema: MessageType): Iterator[Group] = {
+    val numberOfLinesToSkip = 1
     stream
-      .drop(NumberOfLinesToSkip) // skip the first line
+      .drop(numberOfLinesToSkip) // skip the first line
       .map(line => formGroupFromALine(line, csvSeparator, schema))
   }
 
   /**
-    * Creates a new file and writes the stream of groups to it.
-    * @param groupStream data to be written to a parquet file.
-    * @param newFilePath the path to the new file (name of the new file).
-    * @param schema schema of the data that will be written to the file.
-    */
+   * Creates a new file and writes the stream of groups to it.
+   *
+   * @param groupStream data to be written to a parquet file.
+   * @param newFilePath the path to the new file (name of the new file).
+   * @param schema      schema of the data that will be written to the file.
+   */
   private def saveGroupsIntoFile(groupStream: Iterator[Group], newFilePath: String, schema: MessageType): Unit = {
     if (new File(newFilePath).exists()) {
       throw new IOException(newFilePath + ".parquet already exists.")
@@ -104,7 +104,7 @@ object CsvToParquetConverter {
     val writeSupport = new GroupWriteSupport
     val config = new Configuration
     GroupWriteSupport.setSchema(schema, config)
-    for{
+    for {
       writer <- managed(
         new ParquetWriter[Group](
           path,

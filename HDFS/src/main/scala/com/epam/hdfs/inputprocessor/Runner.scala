@@ -1,4 +1,5 @@
 package com.epam.hdfs.inputprocessor
+
 import java.io.IOException
 
 import com.epam.hdfs.converter.CsvToParquetConverter
@@ -11,31 +12,33 @@ import org.apache.log4j.Logger
 object Runner {
 
   /**
-    * The default logger for this class.
-    */
+   * The default logger for this class.
+   */
   private val Log = Logger.getLogger(Runner.getClass)
 
   /**
-    * Checks if there are enough arguments to run this program.
-    * @param cmdLine Cmd args.
-    * @return Boolean telling whether or not there are enough arguments to run this program.
-    */
-  def areThereEnoughArguments(cmdLine: CommandLine): Boolean = {
+   * Checks if there are enough arguments to run this program.
+   *
+   * @param cmdLine Cmd args.
+   * @return Boolean telling whether or not there are enough arguments to run this program.
+   */
+  private def areThereEnoughArguments(cmdLine: CommandLine): Boolean = {
     cmdLine.hasOption(ArgConstants.SchemaPathArg) &&
-    cmdLine.hasOption(ArgConstants.NewFilePathArg) &&
-    cmdLine.hasOption(ArgConstants.CsvSeparatorArg) &&
-    cmdLine.hasOption(ArgConstants.CsvPathArg)
+      cmdLine.hasOption(ArgConstants.NewFilePathArg) &&
+      cmdLine.hasOption(ArgConstants.CsvSeparatorArg) &&
+      cmdLine.hasOption(ArgConstants.CsvPathArg)
   }
 
   /**
-    * Takes action according to what user entered.
-    * If they entered the 4 necessary arguments then runs the program.
-    * If they asked for help, then prints the tool's manual.
-    * If they didn't provide good arguments, then exits the program and tells about the bad arguments.
-    * @param cmdLine Cmd args.
-    * @param options Possible cmd options.
-    */
-  def takeActionAccordingToUserInput(cmdLine: CommandLine, options: Options): Unit = {
+   * Takes action according to what user entered.
+   * If they entered the 4 necessary arguments then runs the program.
+   * If they asked for help, then prints the tool's manual.
+   * If they didn't provide good arguments, then exits the program and tells about the bad arguments.
+   *
+   * @param cmdLine Cmd args.
+   * @param options Possible cmd options.
+   */
+  private def takeActionAccordingToUserInput(cmdLine: CommandLine, options: Options): Unit = {
     if (cmdLine.hasOption(ArgConstants.HelpArg)) {
       val formatter = new HelpFormatter
       formatter.printHelp("CsvToParquetConverter", options)
