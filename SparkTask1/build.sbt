@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
 )
 
-coverageEnabled := false
+coverageEnabled := true
 
 scapegoatVersion in ThisBuild := "1.3.2"
 scalaBinaryVersion in ThisBuild := "2.12"
