@@ -2,7 +2,6 @@ package com.epam.hdfs.converter
 import java.io.{File, IOException}
 import java.nio.file.{Files, Paths}
 import java.util.stream.{Collectors, IntStream}
-import com.epam.hdfs.inputprocessor.ArgConstants
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.parquet.column.ParquetProperties
@@ -12,8 +11,8 @@ import org.apache.parquet.hadoop.ParquetWriter
 import org.apache.parquet.hadoop.example.GroupWriteSupport
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName
 import org.apache.parquet.schema.{MessageType, MessageTypeParser}
-import scala.collection.immutable
 import scala.io.Source
+import resource.managed
 
 /**
  * A file that converts csv to parquet format.
@@ -85,7 +84,7 @@ object CsvToParquetConverter {
     * @param schema schema of data in csv.
     * @return a stream of groups to be written to a file.
     */
-  def transformIntoGroupStream(stream: Iterator[String], csvSeparator: String, schema: MessageType): Iterator[Group] = {
+  private def transformIntoGroupStream(stream: Iterator[String], csvSeparator: String, schema: MessageType): Iterator[Group] = {
     stream
       .drop(NumberOfLinesToSkip) // skip the first line
       .map(line => formGroupFromALine(line, csvSeparator, schema))
@@ -97,7 +96,7 @@ object CsvToParquetConverter {
     * @param newFilePath the path to the new file (name of the new file).
     * @param schema schema of the data that will be written to the file.
     */
-  def saveGroupsIntoFile(groupStream: Iterator[Group], newFilePath: String, schema: MessageType): Unit = {
+  private def saveGroupsIntoFile(groupStream: Iterator[Group], newFilePath: String, schema: MessageType): Unit = {
     if (new File(newFilePath).exists()) {
       throw new IOException(newFilePath + ".parquet already exists.")
     }
@@ -105,31 +104,30 @@ object CsvToParquetConverter {
     val writeSupport = new GroupWriteSupport
     val config = new Configuration
     GroupWriteSupport.setSchema(schema, config)
-    val writer = new ParquetWriter[Group](
-      path,
-      writeSupport,
-      ParquetWriter.DEFAULT_COMPRESSION_CODEC_NAME,
-      ParquetWriter.DEFAULT_BLOCK_SIZE,
-      ParquetWriter.DEFAULT_PAGE_SIZE,
-      ParquetWriter.DEFAULT_PAGE_SIZE,
-      ParquetWriter.DEFAULT_IS_DICTIONARY_ENABLED,
-      ParquetWriter.DEFAULT_IS_VALIDATING_ENABLED,
-      ParquetProperties.WriterVersion.PARQUET_1_0,
-      config
-    )
-    groupStream.foreach(group => writer.write(group))
-    writer.close()
+    for{
+      writer <- managed(
+        new ParquetWriter[Group](
+          path,
+          writeSupport,
+          ParquetWriter.DEFAULT_COMPRESSION_CODEC_NAME,
+          ParquetWriter.DEFAULT_BLOCK_SIZE,
+          ParquetWriter.DEFAULT_PAGE_SIZE,
+          ParquetWriter.DEFAULT_PAGE_SIZE,
+          ParquetWriter.DEFAULT_IS_DICTIONARY_ENABLED,
+          ParquetWriter.DEFAULT_IS_VALIDATING_ENABLED,
+          ParquetProperties.WriterVersion.PARQUET_1_0,
+          config
+        )
+      )
+    } {
+      groupStream.foreach(group => writer.write(group))
+    }
   }
 
   /**
    * The main function of this utility that converts csv to parquet format.
    */
-  def convertAndSaveAsANewFile(argumentMap: immutable.Map[String, String]): Unit = {
-    val schemaFilePath = argumentMap(ArgConstants.SchemaPathArg)
-    val csvFilePath = argumentMap(ArgConstants.CsvPathArg)
-    val newFilePath = argumentMap(ArgConstants.NewFilePathArg)
-    val csvSeparator = argumentMap(ArgConstants.CsvSeparatorArg)
-
+  def convertAndSaveAsANewFile(csvFilePath: String, csvSeparator: String, newFilePath: String, schemaFilePath: String): Unit = {
     val schemaString = readSchema(schemaFilePath)
     val schema = MessageTypeParser.parseMessageType(schemaString)
     val bufferedSource = Source.fromFile(csvFilePath)
