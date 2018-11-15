@@ -3,9 +3,9 @@
 --1) Execute "hive", to get into the hive cli.
 --2) Execute "source path/to/this/file", this will run the script. 
 
-create database if not exists pavel_orekhov;
+create database if not exists ${hiveconf:dbName};
 
-create external table if not exists pavel_orekhov.train
+create external table if not exists ${hiveconf:dbName}.${hiveconf:tableName}
 (
         id string,
         date_time string,
@@ -38,5 +38,5 @@ fields terminated by ','
 lines terminated by '\n'
 stored as textfile;
 
-use pavel_orekhov;
-load data local inpath "test.csv" into table train;
+use ${hiveconf:dbName};
+load data local inpath "${hiveconf:csvName}" into table ${hiveconf:tableName};
