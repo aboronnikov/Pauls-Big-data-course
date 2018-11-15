@@ -1,3 +1,4 @@
+import org.apache.log4j.Logger
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -6,6 +7,11 @@ import org.apache.spark.sql.types._
  * Class that solves task 1 of the spark module.
  */
 object Task3 {
+
+  /**
+    * Default logger.
+    */
+  val Log = Logger.getLogger(Task3.getClass)
 
   /**
    * Schema for the train.csv file.
@@ -110,7 +116,6 @@ object Task3 {
    */
   def buildSession(): SparkSession = {
     SparkSession.builder()
-      .master("local[*]")
       .appName("SparkTask3")
       .getOrCreate()
   }
@@ -121,12 +126,16 @@ object Task3 {
    * @param args cmd args.
    */
   def main(args: Array[String]): Unit = {
-    val spark = buildSession()
-    val pathToTrainCsv = args(0)
-    val df = readDataFrameFromCsv(pathToTrainCsv, spark)
-    val dataset = calculateResults(df)
-    val numberOfLinesToShow = 3
-    dataset.show(numberOfLinesToShow)
-    spark.stop()
+    if (args.length == 1) {
+      val spark = buildSession()
+      val pathToTrainCsv = args(0)
+      val df = readDataFrameFromCsv(pathToTrainCsv, spark)
+      val dataset = calculateResults(df)
+      val numberOfLinesToShow = 3
+      dataset.show(numberOfLinesToShow)
+      spark.stop()
+    } else {
+      Log.info("You must provide the path to your csv file.")
+    }
   }
 }
