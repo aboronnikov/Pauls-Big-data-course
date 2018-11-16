@@ -44,7 +44,7 @@ object CsvToParquetConverter {
   private def formGroupFromALine(line: String, csvSeparator: String, schema: MessageType): Group = {
     val group = new SimpleGroup(schema)
     val values = line.split(csvSeparator)
-    for (id <- 0 until schema.getFieldCount) {
+    for {id <- 0 until schema.getFieldCount} {
       val fieldName = schema.getColumns.get(id).getPrimitiveType.getName
       val fieldType = schema.getColumns.get(id).getPrimitiveType.getPrimitiveTypeName
       writeCorrectGroupValue(group, values(id), fieldType, fieldName)
