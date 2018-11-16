@@ -5,7 +5,7 @@ import org.scalatest.junit.JUnitSuite
 /**
  * Test suite for task1.
  */
-class Task1Test extends JUnitSuite {
+class TaskOneTest extends JUnitSuite {
 
   /**
    * Spark session necessary for this task.
@@ -32,16 +32,16 @@ class Task1Test extends JUnitSuite {
     (2, 3, 3, 3),
     (2, 4, 4, 4),
     (2, 4, 4, 4)
-  ).toDF(Task1.SrchAdultsCnt, Task1.HotelCountry, Task1.HotelMarket, Task1.HotelContinent)
+  ).toDF(TaskOne.SrchAdultsCnt, TaskOne.HotelCountry, TaskOne.HotelMarket, TaskOne.HotelContinent)
 
   /**
    * A test, comparing the answer of 2,1,1,1 with whatever calculateResults produces.
    */
   @Test
   def calculateResultsTest(): Unit = {
-    val dataset = Task1.calculateResults(dataFrame)
+    val dataset = TaskOne.calculateResults(dataFrame)
     val expected = Array[Long](2, 1, 1, 1)
-    val actual = dataset.select(Task1.Count).as[Long].collect()
+    val actual = dataset.select(TaskOne.Count).as[Long].collect()
     Assert.assertArrayEquals(expected, actual)
   }
 

@@ -6,12 +6,12 @@ import org.apache.spark.sql.types._
 /**
  * Class that solves task 1 of the spark module.
  */
-object Task3 {
+object TaskThree {
 
   /**
-    * Default logger.
-    */
-  val Log = Logger.getLogger(Task3.getClass)
+   * Default logger.
+   */
+  val Log = Logger.getLogger(TaskThree.getClass)
 
   /**
    * Schema for the train.csv file.
