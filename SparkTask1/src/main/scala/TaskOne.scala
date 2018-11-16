@@ -1,5 +1,5 @@
 import org.apache.log4j.Logger
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
@@ -23,7 +23,7 @@ object TaskOne {
   val UserLocationCountry: String = "user_location_country"
   val UserLocationRegion: String = "user_location_region"
   val UserLocationCity: String = "user_location_city"
-  val OriginalDestinationDistance: String = "orig_destinatio_distance"
+  val OriginalDestinationDistance: String = "orig_destination_distance"
   val UserId: String = "user_id"
   val IsMobile: String = "is_mobile"
   val IsPackage: String = "is_package"
@@ -75,7 +75,7 @@ object TaskOne {
   ))
 
   /**
-   * Builds the spark session for processing the dataset.
+   * Builds the spark session for processing the DataFrame.
    *
    * @return new SparkSession.
    */
@@ -101,12 +101,12 @@ object TaskOne {
   }
 
   /**
-   * Calculates the dataset as per task1 specification.
+   * Calculates the DataFrame as per task1 specification.
    *
    * @param df dataframe with data from csv.
-   * @return Dataset of results.
+   * @return DataFrame of results.
    */
-  def calculateResults(df: DataFrame): Dataset[Row] = {
+  def calculateResults(df: DataFrame): DataFrame = {
     df.filter(df(SearchAdultsCount) === 2)
       .groupBy(HotelCountry, HotelMarket, HotelContinent)
       .agg(count("*").alias(Count))
@@ -126,9 +126,9 @@ object TaskOne {
       val firstArgument = 0
       val pathToTrainCsv = args(firstArgument)
       val df = readDataFrameFromCsv(pathToTrainCsv, spark)
-      val dataset = calculateResults(df)
+      val result = calculateResults(df)
       val numberOfLinesToShow = 3
-      dataset.show(numberOfLinesToShow)
+      result.show(numberOfLinesToShow)
 
       spark.stop()
     } else {

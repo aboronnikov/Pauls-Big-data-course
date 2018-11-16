@@ -1,5 +1,5 @@
 import org.apache.log4j.Logger
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
@@ -90,22 +90,23 @@ object TaskThree {
   }
 
   /**
-   * Calculates the dataset as per task3 specification.
+   * Calculates the DataFrame as per task3 specification.
    *
    * @param df dataframe with data from csv.
-   * @return Dataset of results.
+   * @return DataFrame of results.
    */
-  def calculateResults(df: DataFrame): Dataset[Row] = {
+  def calculateResults(df: DataFrame): DataFrame = {
     df.filter(df(SearchAdultsCount) > 0)
       .filter(df(SearchChildrenCount) > 0)
       .filter(df(IsBooking) === 0)
       .groupBy(HotelCountry, HotelMarket, HotelContinent)
       .agg(count("*").alias(Count))
       .orderBy(desc(Count))
+      .toDF()
   }
 
   /**
-   * Builds the spark session for processing the dataset.
+   * Builds the spark session for processing the DataFrame.
    *
    * @return new SparkSession.
    */
@@ -128,9 +129,9 @@ object TaskThree {
       val firstArgument = 0
       val pathToTrainCsv = args(firstArgument)
       val df = readDataFrameFromCsv(pathToTrainCsv, spark)
-      val dataset = calculateResults(df)
+      val result = calculateResults(df)
       val numberOfLinesToShow = 3
-      dataset.show(numberOfLinesToShow)
+      result.show(numberOfLinesToShow)
 
       spark.stop()
     } else {

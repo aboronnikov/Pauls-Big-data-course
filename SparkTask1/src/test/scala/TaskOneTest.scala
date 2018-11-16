@@ -39,9 +39,9 @@ class TaskOneTest extends JUnitSuite {
    */
   @Test
   def calculateResultsTest(): Unit = {
-    val dataset = TaskOne.calculateResults(dataFrame)
+    val result = TaskOne.calculateResults(dataFrame)
     val expected = Array[Long](2, 1, 1, 1)
-    val actual = dataset.select(TaskOne.Count).as[Long].collect()
+    val actual = result.select(TaskOne.Count).as[Long].collect()
     Assert.assertArrayEquals(expected, actual)
   }
 

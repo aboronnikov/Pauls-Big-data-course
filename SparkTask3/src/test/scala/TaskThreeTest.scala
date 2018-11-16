@@ -33,13 +33,13 @@ class TaskThreeTest extends JUnitSuite {
   ).toDF(TaskThree.SearchAdultsCount, TaskThree.SearchChildrenCount, TaskThree.IsBooking, TaskThree.HotelCountry, TaskThree.HotelMarket, TaskThree.HotelContinent)
 
   /**
-   * A test, comparing the answer of 3,1,1 with whatever calculateResults produces.
+   * A test comparing the answer of 3,1,1 with whatever calculateResults produces.
    */
   @Test
   def calculateResultsTest(): Unit = {
-    val dataset = TaskThree.calculateResults(dataFrame)
+    val result = TaskThree.calculateResults(dataFrame)
     val expected = Array[Long](3, 1, 1)
-    val actual = dataset.select(TaskThree.Count).as[Long].collect()
+    val actual = result.select(TaskThree.Count).as[Long].collect()
     Assert.assertArrayEquals(expected, actual)
   }
 
