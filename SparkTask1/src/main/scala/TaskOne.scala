@@ -23,7 +23,7 @@ object TaskOne {
   val UserLocationCountry: String = "user_location_country"
   val UserLocationRegion: String = "user_location_region"
   val UserLocationCity: String = "user_location_city"
-  val OriginalDestinationDistance: String = "orig_destination_distance"
+  val OriginalDestinationDistance: String = "orig_destinatio_distance"
   val UserId: String = "user_id"
   val IsMobile: String = "is_mobile"
   val IsPackage: String = "is_package"
