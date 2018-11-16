@@ -32,7 +32,7 @@ class TaskOneTest extends JUnitSuite {
     (2, 3, 3, 3),
     (2, 4, 4, 4),
     (2, 4, 4, 4)
-  ).toDF(TaskOne.SrchAdultsCnt, TaskOne.HotelCountry, TaskOne.HotelMarket, TaskOne.HotelContinent)
+  ).toDF(TaskOne.SearchAdultsCount, TaskOne.HotelCountry, TaskOne.HotelMarket, TaskOne.HotelContinent)
 
   /**
    * A test, comparing the answer of 2,1,1,1 with whatever calculateResults produces.

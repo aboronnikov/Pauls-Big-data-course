@@ -30,7 +30,7 @@ class TaskThreeTest extends JUnitSuite {
     (2, 3, 0, 1, 1, 1),
     (2, 3, 0, 2, 2, 2),
     (2, 3, 0, 3, 3, 3)
-  ).toDF(TaskThree.SrchAdultsCnt, TaskThree.SrchChildrenCnt, TaskThree.IsBooking, TaskThree.HotelCountry, TaskThree.HotelMarket, TaskThree.HotelContinent)
+  ).toDF(TaskThree.SearchAdultsCount, TaskThree.SearchChildrenCount, TaskThree.IsBooking, TaskThree.HotelCountry, TaskThree.HotelMarket, TaskThree.HotelContinent)
 
   /**
    * A test, comparing the answer of 3,1,1 with whatever calculateResults produces.

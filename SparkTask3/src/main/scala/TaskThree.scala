@@ -13,35 +13,62 @@ object TaskThree {
    */
   val Log = Logger.getLogger(TaskThree.getClass)
 
+  val Id: String = "id"
+  val DateTime: String = "date_time"
+  val SiteName: String = "site_name"
+  val PosaContinent: String = "posa_continent"
+  val UserLocationCountry: String = "user_location_country"
+  val UserLocationRegion: String = "user_location_region"
+  val UserLocationCity: String = "user_location_city"
+  val OriginalDestinationDistance: String = "orig_destination_distance"
+  val UserId: String = "user_id"
+  val IsMobile: String = "is_mobile"
+  val IsPackage: String = "is_package"
+  val Channel: String = "channel"
+  val SearchCheckIn: String = "srch_ci"
+  val SearchCheckout: String = "srch_co"
+  val SearchAdultsCount: String = "srch_adults_cnt"
+  val SearchChildrenCount: String = "srch_children_cnt"
+  val SearchRoomCount: String = "srch_rm_cnt"
+  val SearchDestinationId: String = "srch_destination_id"
+  val SearchDestinationTypeId: String = "srch_destination_type_id"
+  val IsBooking: String = "is_booking"
+  val HotelCluster: String = "hotel_cluster"
+  val Cnt: String = "cnt"
+  val HotelContinent: String = "hotel_continent"
+  val HotelCountry: String = "hotel_country"
+  val HotelMarket: String = "hotel_market"
+  val Count: String = "count"
+
   /**
    * Schema for the train.csv file.
    */
   val TrainSchema = new StructType(Array(
-    StructField("id", IntegerType, nullable = true),
-    StructField("date_time", StringType, nullable = true),
-    StructField("site_name", IntegerType, nullable = true),
-    StructField("posa_continent", IntegerType, nullable = true),
-    StructField("user_location_country", IntegerType, nullable = true),
-    StructField("user_location_region", IntegerType, nullable = true),
-    StructField("user_location_city", IntegerType, nullable = true),
-    StructField("orig_destination_distance", DoubleType, nullable = true),
-    StructField("user_id", IntegerType, nullable = true),
-    StructField("is_mobile", IntegerType, nullable = true),
-    StructField("is_package", IntegerType, nullable = true),
-    StructField("channel", IntegerType, nullable = true),
-    StructField("srch_ci", StringType, nullable = true),
-    StructField("srch_co", StringType, nullable = true),
-    StructField("srch_adults_cnt", IntegerType, nullable = true),
-    StructField("srch_children_cnt", IntegerType, nullable = true),
-    StructField("srch_rm_cnt", IntegerType, nullable = true),
-    StructField("srch_destination_id", IntegerType, nullable = true),
-    StructField("srch_destination_type_id", IntegerType, nullable = true),
-    StructField("hotel_continent", IntegerType, nullable = true),
-    StructField("hotel_country", IntegerType, nullable = true),
-    StructField("hotel_market", IntegerType, nullable = true),
-    StructField("is_booking", IntegerType, nullable = true),
-    StructField("cnt", LongType, nullable = true),
-    StructField("hotel_cluster", IntegerType, nullable = true)
+    StructField(Id, IntegerType, nullable = true),
+    StructField(DateTime, StringType, nullable = true),
+    StructField(SiteName, IntegerType, nullable = true),
+    StructField(PosaContinent, IntegerType, nullable = true),
+    StructField(UserLocationCountry, IntegerType, nullable = true),
+    StructField(UserLocationRegion, IntegerType, nullable = true),
+    StructField(UserLocationCity, IntegerType, nullable = true),
+    StructField(OriginalDestinationDistance, DoubleType, nullable = true),
+    StructField(UserId, IntegerType, nullable = true),
+    StructField(IsMobile, IntegerType, nullable = true),
+    StructField(IsPackage, IntegerType, nullable = true),
+    StructField(Channel, IntegerType, nullable = true),
+    StructField(SearchCheckIn, StringType, nullable = true),
+    StructField(SearchCheckout, StringType, nullable = true),
+    StructField(SearchAdultsCount, IntegerType, nullable = true),
+    StructField(SearchChildrenCount, IntegerType, nullable = true),
+    StructField(SearchRoomCount, IntegerType, nullable = true),
+    StructField(SearchDestinationId, IntegerType, nullable = true),
+    StructField(SearchDestinationTypeId, IntegerType, nullable = true),
+    StructField(HotelContinent, IntegerType, nullable = true),
+    StructField(HotelCountry, IntegerType, nullable = true),
+    StructField(HotelMarket, IntegerType, nullable = true),
+    StructField(IsBooking, IntegerType, nullable = true),
+    StructField(Cnt, LongType, nullable = true),
+    StructField(HotelCluster, IntegerType, nullable = true)
   ))
 
   /**
@@ -60,49 +87,14 @@ object TaskThree {
   }
 
   /**
-   * Column name for the number of adults.
-   */
-  val SrchAdultsCnt = "srch_adults_cnt"
-
-  /**
-   * Column name for the number of children.
-   */
-  val SrchChildrenCnt = "srch_children_cnt"
-
-  /**
-   * Column name for the is bookig flag.
-   */
-  val IsBooking = "is_booking"
-
-  /**
-   * Column name for the hotel country.
-   */
-  val HotelCountry = "hotel_country"
-
-  /**
-   * Column name for hotel market.
-   */
-  val HotelMarket = "hotel_market"
-
-  /**
-   * Column name for hotel continent.
-   */
-  val HotelContinent = "hotel_continent"
-
-  /**
-   * Column name for the count column.
-   */
-  val Count = "count"
-
-  /**
    * Calculates the dataset as per task3 specification.
    *
    * @param df dataframe with data from csv.
    * @return Dataset of results.
    */
   def calculateResults(df: DataFrame): Dataset[Row] = {
-    df.filter(df(SrchAdultsCnt) > 0)
-      .filter(df(SrchChildrenCnt) > 0)
+    df.filter(df(SearchAdultsCount) > 0)
+      .filter(df(SearchChildrenCount) > 0)
       .filter(df(IsBooking) === 0)
       .groupBy(HotelCountry, HotelMarket, HotelContinent)
       .agg(count("*").alias(Count))

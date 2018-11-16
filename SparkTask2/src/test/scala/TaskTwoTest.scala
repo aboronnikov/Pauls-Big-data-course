@@ -27,7 +27,7 @@ class TaskTwoTest extends JUnitSuite {
     (1, 1, 1),
     (1, 1, 1),
     (2, 2, 1),
-  ).toDF(TaskTwo.HotelCountry, TaskTwo.SrchDestinationId, TaskTwo.IsBooking)
+  ).toDF(TaskTwo.HotelCountry, TaskTwo.SearchDestinationId, TaskTwo.IsBooking)
 
   /**
    * A test, comparing the answer of 2,1 with whatever calculateResults produces.
