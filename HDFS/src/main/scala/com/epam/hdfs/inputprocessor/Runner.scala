@@ -46,7 +46,7 @@ object Runner {
       val cmdLine = CmdUtils.parseArgs(args)
       if (cmdLine.hasOption(ArgConstants.HelpArg)) {
         val formatter = new HelpFormatter
-        formatter.printHelp("CsvToParquetConverter", CmdUtils.options)
+        formatter.printHelp("CsvToParquetConverter", CmdUtils.Options)
       } else if (CmdUtils.areThereEnoughArguments(cmdLine)) {
         val csvPath = cmdLine.getOptionValue(ArgConstants.CsvPathArg)
         val csvSeparator = cmdLine.getOptionValue(ArgConstants.CsvSeparatorArg)

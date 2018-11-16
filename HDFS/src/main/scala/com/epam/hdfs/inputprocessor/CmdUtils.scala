@@ -7,7 +7,7 @@ object CmdUtils {
   /**
    * Command line options available for this program.
    */
-  val options: Options = new Options()
+  val Options: Options = new Options()
     .addOption(ArgConstants.SchemaPathArg, true, "Specifies the path to the schema file. Required.")
     .addOption(ArgConstants.CsvPathArg, true, "Specified the path to the csv file. Required.")
     .addOption(ArgConstants.CsvSeparatorArg, true, "Specifies the separator used in the csv file. Required.")
@@ -21,7 +21,7 @@ object CmdUtils {
    */
   def parseArgs(args: Array[String]): CommandLine = {
     val cmdParser = new DefaultParser
-    cmdParser.parse(options, args)
+    cmdParser.parse(Options, args)
   }
 
   /**
