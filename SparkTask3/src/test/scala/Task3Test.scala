@@ -1,3 +1,4 @@
+import org.apache.spark.sql.SparkSession
 import org.junit.{After, Assert, Test}
 import org.scalatest.junit.JUnitSuite
 
@@ -9,7 +10,10 @@ class Task3Test extends JUnitSuite {
   /**
    * Spark session necessary for this task.
    */
-  private val spark = Task3.buildSession()
+  private val spark = SparkSession.builder()
+    .master("local[*]")
+    .appName("SparkTask3")
+    .getOrCreate()
 
   import spark.implicits._
 
