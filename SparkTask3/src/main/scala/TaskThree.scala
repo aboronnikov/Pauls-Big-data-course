@@ -11,8 +11,11 @@ object TaskThree {
   /**
    * Default logger.
    */
-  val Log = Logger.getLogger(TaskThree.getClass)
+  val Log: Logger = Logger.getLogger(TaskThree.getClass)
 
+  /**
+   * Below are all the header constants.
+   */
   val Id: String = "id"
   val DateTime: String = "date_time"
   val SiteName: String = "site_name"
@@ -118,13 +121,17 @@ object TaskThree {
    * @param args cmd args.
    */
   def main(args: Array[String]): Unit = {
-    if (args.length == 1) {
+    val properLength = 1
+    if (args.length == properLength) {
       val spark = buildSession()
-      val pathToTrainCsv = args(0)
+
+      val firstArgument = 0
+      val pathToTrainCsv = args(firstArgument)
       val df = readDataFrameFromCsv(pathToTrainCsv, spark)
       val dataset = calculateResults(df)
       val numberOfLinesToShow = 3
       dataset.show(numberOfLinesToShow)
+
       spark.stop()
     } else {
       Log.info("You must provide the path to your csv file.")

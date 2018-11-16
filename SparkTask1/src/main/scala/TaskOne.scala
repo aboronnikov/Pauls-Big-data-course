@@ -11,8 +11,11 @@ object TaskOne {
   /**
    * Default logger.
    */
-  val Log = Logger.getLogger(TaskOne.getClass)
+  val Log: Logger = Logger.getLogger(TaskOne.getClass)
 
+  /**
+   * Below are all the header constants.
+   */
   val Id: String = "id"
   val DateTime: String = "date_time"
   val SiteName: String = "site_name"
