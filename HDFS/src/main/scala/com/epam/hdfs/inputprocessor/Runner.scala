@@ -5,6 +5,9 @@ import java.io.IOException
 import com.epam.hdfs.converter.CsvToParquetConverter
 import org.apache.commons.cli._
 import org.apache.log4j.Logger
+import resource.managed
+
+import scala.io.Source
 
 /**
  * The entry point object of the program.
@@ -24,9 +27,23 @@ object Runner {
    */
   private def areThereEnoughArguments(cmdLine: CommandLine): Boolean = {
     cmdLine.hasOption(ArgConstants.SchemaPathArg) &&
-      cmdLine.hasOption(ArgConstants.NewFilePathArg) &&
-      cmdLine.hasOption(ArgConstants.CsvSeparatorArg) &&
-      cmdLine.hasOption(ArgConstants.CsvPathArg)
+    cmdLine.hasOption(ArgConstants.NewFilePathArg) &&
+    cmdLine.hasOption(ArgConstants.CsvSeparatorArg) &&
+    cmdLine.hasOption(ArgConstants.CsvPathArg)
+  }
+
+  /**
+   * The main function of this utility that converts csv to parquet format.
+   */
+  private def convertCsvToParquet(csvFilePath: String, csvSeparator: String, newFilePath: String, schemaFilePath: String): Unit = {
+    val schema = IOUtils.readSchemaFromFile(schemaFilePath)
+    for{
+      source <- managed(Source.fromFile(csvFilePath))
+    } {
+      val fileStream = source.getLines
+      val groupStream = CsvToParquetConverter.transformIntoGroupStream(fileStream, csvSeparator, schema)
+      IOUtils.writeGroupsToFile(groupStream, newFilePath, schema)
+    }
   }
 
   /**
@@ -47,7 +64,7 @@ object Runner {
       val csvSeparator = cmdLine.getOptionValue(ArgConstants.CsvSeparatorArg)
       val newFilePath = cmdLine.getOptionValue(ArgConstants.NewFilePathArg)
       val schemaPath = cmdLine.getOptionValue(ArgConstants.SchemaPathArg)
-      CsvToParquetConverter.convertAndSaveAsANewFile(csvPath, csvSeparator, newFilePath, schemaPath)
+      convertCsvToParquet(csvPath, csvSeparator, newFilePath, schemaPath)
       Log.info(FeedbackMessageConstants.Success)
     } else {
       Log.info(FeedbackMessageConstants.BadArgsProblem)
@@ -76,7 +93,6 @@ object Runner {
       case e: NumberFormatException => Log.info(FeedbackMessageConstants.BadNumberFormat, e)
       case e: ParseException        => Log.info(FeedbackMessageConstants.BadArgsProblem, e)
       case e: IOException           => Log.info(FeedbackMessageConstants.IOProblem, e)
-      case e: Exception             => Log.info(FeedbackMessageConstants.UnknownProblem, e)
     }
   }
 }
