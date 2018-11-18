@@ -1,0 +1,17 @@
+*/target/*
+*.class
+*.log
+*.cache
+*.zip
+!*Homework.zip
+!*homework.zip
+*.tgz
+*.tmp
+*.jar
+sbt__*.xml
+*.parquet
+*.crc
+*.txt
+*.temp
+.idea/*
+*/.idea/*
