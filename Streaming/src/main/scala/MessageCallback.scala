@@ -1,20 +1,30 @@
 import org.apache.kafka.clients.producer.{Callback, RecordMetadata}
 import org.apache.log4j.Logger
 
+/**
+  * Callback object, that notifies us of exceptional of successful outcome.
+  */
 object MessageCallback extends Callback {
-  //private val Log = Logger.getLogger(MessageCallback.getClass)
+  /**
+    * Default logger.
+    */
+  private val Log = Logger.getLogger(MessageCallback.getClass)
+
+  /**
+    * Method that is executed upon completion of our data transfer.
+    * @param metadata metadata of our transferred record.
+    * @param exception exception, if it occurred, otherwise null in its place.
+    */
   override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
-    if (exception != null) {
-      //Log.error("Message dispatch was not successful", exception)
-      println(exception.getMessage)
-    } else {
-      /*Log.info(
+    if (exception != null && Log.isInfoEnabled) {
+      Log.error("Message dispatch was not successful", exception)
+    } else if (Log.isInfoEnabled) {
+      Log.info(
         "RecordMetadata: Topic: {} Offset: {} Partition: {}",
         metadata.topic,
         metadata.offset,
         metadata.partition
-      )*/
-      println("MESSAGES SENT SUCCESSFULLY")
+      )
     }
   }
 }

@@ -1,8 +1,8 @@
-name := "Streaming"
+name := "StreamingConsumer"
 version := "0.1"
 scalaVersion := "2.12.7"
-mainClass in Compile := Some("Producer")
-assemblyJarName in assembly := "streaming.jar"
+mainClass in Compile := Some("Consumer")
+assemblyJarName in assembly := "streamingConsumer.jar"
 
 val sparkVersion = "2.4.0"
 
@@ -14,8 +14,7 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0"
 )
 
-coverageEnabled := true
-coverageExcludedPackages := ".*inputprocessor"
+coverageEnabled := false
 
 scapegoatVersion in ThisBuild := "1.3.2"
 scalaBinaryVersion in ThisBuild := "2.12"
@@ -28,6 +27,5 @@ assemblyMergeStrategy in assembly := {
 libraryDependencies ++= Seq(
   "junit" % "junit" % "4.12" % Test,
   "org.scalatest" %% "scalatest" % "3.2.0-SNAP10" % Test,
-  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
-  "org.mockito" % "mockito-all" % "1.9.5" % Test
+  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test
 )
