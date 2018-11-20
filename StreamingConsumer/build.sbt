@@ -1,7 +1,7 @@
 name := "StreamingConsumer"
 version := "0.1"
 scalaVersion := "2.11.7"
-mainClass in Compile := Some("streamingConsumer")
+mainClass in Compile := Some("com.epam.sparkconsumer.program.Consumer")
 assemblyJarName in assembly := "streamingConsumer.jar"
 
 val sparkVersion = "2.4.0"
@@ -9,11 +9,11 @@ val sparkVersion = "2.4.0"
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
-  "org.apache.kafka" %% "kafka" % "2.0.0" % "provided",
+  "org.apache.kafka" %% "kafka" % "2.0.0",
   "log4j" % "log4j" % "1.2.17",
   "org.scala-lang" % "scala-library" % "2.11.7",
   "com.jsuereth" %% "scala-arm" % "2.0",
-  "commons-cli" % "commons-cli" % "1.4"
+  "commons-cli" % "commons-cli" % "1.2"
 )
 
 coverageEnabled := false

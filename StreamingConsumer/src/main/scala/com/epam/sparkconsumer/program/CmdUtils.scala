@@ -1,6 +1,6 @@
 package com.epam.sparkconsumer.program
 
-import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
+import org.apache.commons.cli._
 
 /**
  * Command line utilities.
@@ -13,6 +13,7 @@ object CmdUtils {
   val Url = "url"
   val FilePath = "filePath"
   val FileFormat = "fileFormat"
+  val DoBatch = "doBatch"
   val Help = "help"
 
   private val HasArg = true
@@ -26,6 +27,7 @@ object CmdUtils {
     .addOption(Url, HasArg, "Topic url. Required to run the program.")
     .addOption(FilePath, HasArg, "File path. Required to run the program.")
     .addOption(FileFormat, HasArg, "File format. Required to run the program.")
+    .addOption(DoBatch, HasArg, "Tells whether we should use batching or streaming. Required.")
     .addOption(Help, NoArg, "Help. Optional.")
 
   /**
@@ -35,11 +37,11 @@ object CmdUtils {
    * @return CommandLine object.
    */
   def parserArgs(args: Array[String]): CommandLine = {
-    val cmdParser = new DefaultParser
+    val cmdParser = new PosixParser
     cmdParser.parse(Options, args)
   }
 
-  /**
+   /**
    * Checks if there are enough arguments to run this program.
    *
    * @param cmdLine command line object.
@@ -49,7 +51,8 @@ object CmdUtils {
     cmdLine.hasOption(Topic) &&
       cmdLine.hasOption(Url) &&
       cmdLine.hasOption(FilePath) &&
-      cmdLine.hasOption(FileFormat)
+      cmdLine.hasOption(FileFormat) &&
+      cmdLine.hasOption(DoBatch)
   }
 
   /**
