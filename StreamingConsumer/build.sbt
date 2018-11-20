@@ -1,7 +1,7 @@
 name := "StreamingConsumer"
 version := "0.1"
-scalaVersion := "2.12.7"
-mainClass in Compile := Some("Consumer")
+scalaVersion := "2.11.7"
+mainClass in Compile := Some("streamingConsumer")
 assemblyJarName in assembly := "streamingConsumer.jar"
 
 val sparkVersion = "2.4.0"
@@ -9,15 +9,17 @@ val sparkVersion = "2.4.0"
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
   "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
-  "org.apache.kafka" %% "kafka" % "2.0.0",
+  "org.apache.kafka" %% "kafka" % "2.0.0" % "provided",
   "log4j" % "log4j" % "1.2.17",
-  "com.jsuereth" %% "scala-arm" % "2.0"
+  "org.scala-lang" % "scala-library" % "2.11.7",
+  "com.jsuereth" %% "scala-arm" % "2.0",
+  "commons-cli" % "commons-cli" % "1.4"
 )
 
 coverageEnabled := false
 
 scapegoatVersion in ThisBuild := "1.3.2"
-scalaBinaryVersion in ThisBuild := "2.12"
+scalaBinaryVersion in ThisBuild := "2.11"
 
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
