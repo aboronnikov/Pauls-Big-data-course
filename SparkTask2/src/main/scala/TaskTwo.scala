@@ -1,4 +1,5 @@
 import org.apache.log4j.Logger
+
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
