@@ -1,10 +1,11 @@
 package com.epam.sparkconsumer.program
 
 import org.apache.commons.lang3.BooleanUtils
-import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.streaming.Trigger
+
+import scala.concurrent.duration._
 
 /**
  * A simple consumer that reads from our kafka topic, using spark streaming.
@@ -16,6 +17,16 @@ object Consumer {
    */
   private val Log = Logger.getLogger(Consumer.getClass)
 
+  /**
+   * Saves file to hdfs by either 1) streaming or 2) batching, depending on the doBatch flag.
+   *
+   * @param spark      currentSparkSession
+   * @param doBatch    batch or stream?
+   * @param url        kafka topic url
+   * @param topic      kafka topic name
+   * @param fileFormat file format to save in
+   * @param filePath   path to the file on hdfs
+   */
   def saveFileToHdfs(spark: SparkSession,
                      doBatch: Boolean,
                      url: String,
@@ -37,22 +48,16 @@ object Consumer {
         .format("kafka")
         .option("kafka.bootstrap.servers", url)
         .option("subscribe", topic)
+        .option("startingOffsets", "earliest")
         .load()
-        .select("value")
+        .selectExpr("CAST(value AS String)")
         .writeStream
         .format(fileFormat)
         .option("path", filePath)
         .option("checkpointLocation", "/tmp/checkpoint")
+        .trigger(Trigger.ProcessingTime(1.second))
         .start()
-        .awaitTermination()
-//        .toDF()
-//        .writeStream
-//        .option("checkpointLocation", "/tmp/checkpoint")
-//        //.format(fileFormat)
-//        .outputMode("append")
-//
-//        .start(filePath)
-//        .awaitTermination()
+        .processAllAvailable()
     }
   }
 
@@ -76,7 +81,12 @@ object Consumer {
       val doBatchStr = cmdLine.getOptionValue(CmdUtils.DoBatch)
       val doBatch = BooleanUtils.toBoolean(doBatchStr)
 
+      val start = System.nanoTime
+
       saveFileToHdfs(spark, doBatch, url, topic, fileFormat, filePath)
+
+      val elapsed = (System.nanoTime - start) / 1e9d
+      Log.info("Elapsed: " + elapsed)
 
       spark.stop()
     } else if (cmdLine.hasOption(CmdUtils.Help)) {

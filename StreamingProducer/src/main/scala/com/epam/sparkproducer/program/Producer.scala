@@ -1,14 +1,14 @@
 package com.epam.sparkproducer.program
 
 import java.util.Properties
-import java.util.concurrent.{CompletableFuture, Executors}
-import java.util.function.BiConsumer
+import java.util.concurrent.{CompletableFuture, ExecutorService, Executors}
 
 import com.epam.sparkproducer.api.KafkaProducerUtils
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig}
 import org.apache.log4j.Logger
 import resource.managed
 
+import scala.compat.java8.FunctionConverters._
 import scala.io.Source
 
 /**
@@ -33,12 +33,58 @@ object Producer {
     properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, url)
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
-    properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "600000")
-    properties.put(ProducerConfig.BATCH_SIZE_CONFIG, "100000")
+    properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "10000000")
+    properties.put(ProducerConfig.BATCH_SIZE_CONFIG, "0")
     properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, "66554432")
     properties
   }
 
+  /**
+   * Properly closes kafka producer.
+   *
+   * @param kafkaProducer kafka producer that writes messages into our topic.
+   */
+  private def closeProducer(kafkaProducer: KafkaProducer[String, String]): Unit = {
+    try {
+      // can't use try with resources here, because it's Closeable but not AutoCloseable
+      kafkaProducer.close()
+    } catch {
+      case e: InterruptedException =>
+        Thread.currentThread().interrupt()
+        Log.info("Failed to run a producer.")
+        Log.info(e.getMessage)
+    }
+  }
+
+  /**
+   * Sets up a kafka producer.
+   * It first creates the producer then uses it to write in to a kafka topic asynchronously.
+   *
+   * @param threadId   the id of this producers thread.
+   * @param futures    the array of futures.
+   * @param properties properties of our producer.
+   * @param reader     file reader.
+   * @param executor   executor, so that we don't use only the default number of threads.
+   * @param topic      name of the topic.
+   */
+  private def setUpKafkaProducer(threadId: Int,
+                                 futures: Array[CompletableFuture[Unit]],
+                                 properties: Properties,
+                                 reader: Iterator[String],
+                                 executor: ExecutorService,
+                                 topic: String): Unit = {
+
+    val kafkaProducer = new KafkaProducer[String, String](properties)
+
+    futures(threadId) = KafkaProducerUtils.writeToKafkaAsync(reader, kafkaProducer, executor, topic)
+
+    futures(threadId).whenComplete(((result: Unit, e: Throwable) =>
+      if (e != null && Log.isInfoEnabled) {
+        Log.info(e.getMessage)
+      }).asJava)
+
+    closeProducer(kafkaProducer)
+  }
 
   /**
    * This method creates nThreads threads and asynchronously writes to a kafka topic, using nThreads producers.
@@ -52,29 +98,14 @@ object Producer {
   private def writeIntoKafkaWithNThreads(nThreads: Int,
                                          topic: String,
                                          reader: Iterator[String],
-                                         url: String): Array[CompletableFuture[Void]] = {
-    val futures = new Array[CompletableFuture[Void]](nThreads)
+                                         url: String): Array[CompletableFuture[Unit]] = {
+    val futures = new Array[CompletableFuture[Unit]](nThreads)
     val executor = Executors.newFixedThreadPool(nThreads)
     for {
       i <- 0 until nThreads
     } {
       val properties = buildProperties(url)
-      val kafkaProducer = new KafkaProducer[String, String](properties)
-      futures(i) = KafkaProducerUtils.writeToKafkaAsync(reader, kafkaProducer, executor, topic)
-
-      /**
-       * Can't use a lambda in scala 2.11, so had to resort to using anonymous classes.
-       */
-      val completionAction = new BiConsumer[Void, Throwable] {
-        override def accept(t: Void, u: Throwable): Unit = {
-          if (u != null && Log.isInfoEnabled) {
-            Log.info(u.getMessage)
-          }
-          kafkaProducer.close()
-        }
-      }
-
-      futures(i).whenComplete(completionAction)
+      setUpKafkaProducer(i, futures, properties, reader, executor, topic)
     }
     futures
   }

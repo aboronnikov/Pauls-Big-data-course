@@ -4,7 +4,7 @@ scalaVersion := "2.11.7"
 mainClass in Compile := Some("com.epam.sparkconsumer.program.Consumer")
 assemblyJarName in assembly := "streamingConsumer.jar"
 
-val sparkVersion = "2.4.0"
+val sparkVersion = "2.3.2"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
