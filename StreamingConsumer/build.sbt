@@ -16,7 +16,9 @@ libraryDependencies ++= Seq(
   "commons-cli" % "commons-cli" % "1.2"
 )
 
-coverageEnabled := false
+coverageEnabled := true
+
+coverageExcludedPackages := "com.epam.sparkconsumer.program"
 
 scapegoatVersion in ThisBuild := "1.3.2"
 scalaBinaryVersion in ThisBuild := "2.11"

@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.0"
 )
 
-coverageEnabled := false
+coverageEnabled := true
 coverageExcludedPackages := "com.epam.sparkproducer.program"
 
 scapegoatVersion in ThisBuild := "1.3.2"

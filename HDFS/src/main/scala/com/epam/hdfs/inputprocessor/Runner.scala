@@ -6,7 +6,6 @@ import com.epam.hdfs.converter.CsvToParquetConverter
 import org.apache.commons.cli._
 import org.apache.log4j.Logger
 import resource.managed
-
 import scala.io.Source
 
 /**

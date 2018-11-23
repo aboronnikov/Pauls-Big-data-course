@@ -1,13 +1,12 @@
 package com.epam.sparkproducer.program
 
 import java.util.Properties
-import java.util.concurrent.{CompletableFuture, ExecutorService, Executors}
+import java.util.concurrent.{CompletableFuture, Executors, ExecutorService}
 
 import com.epam.sparkproducer.api.KafkaProducerUtils
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig}
 import org.apache.log4j.Logger
 import resource.managed
-
 import scala.compat.java8.FunctionConverters._
 import scala.io.Source
 
@@ -29,13 +28,18 @@ object Producer {
    * @return Properties object.
    */
   private def buildProperties(url: String): Properties = {
+    val stringSerializerStr = "org.apache.kafka.common.serialization.StringSerializer"
+    val requestTimeoutMsValueStr = "10000000"
+    val batchSizeValueStr = "0"
+    val bufferMemoryValueStr = "66554432"
+
     val properties = new Properties
     properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, url)
-    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
-    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
-    properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "10000000")
-    properties.put(ProducerConfig.BATCH_SIZE_CONFIG, "0")
-    properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, "66554432")
+    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, stringSerializerStr)
+    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, stringSerializerStr)
+    properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMsValueStr)
+    properties.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSizeValueStr)
+    properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, bufferMemoryValueStr)
     properties
   }
 
@@ -67,12 +71,8 @@ object Producer {
    * @param executor   executor, so that we don't use only the default number of threads.
    * @param topic      name of the topic.
    */
-  private def setUpKafkaProducer(threadId: Int,
-                                 futures: Array[CompletableFuture[Unit]],
-                                 properties: Properties,
-                                 reader: Iterator[String],
-                                 executor: ExecutorService,
-                                 topic: String): Unit = {
+  private def setUpKafkaProducer(threadId: Int, futures: Array[CompletableFuture[Unit]], properties: Properties,
+                                 reader: Iterator[String], executor: ExecutorService, topic: String): Unit = {
 
     val kafkaProducer = new KafkaProducer[String, String](properties)
 
@@ -95,15 +95,11 @@ object Producer {
    * @param url      topic's url.
    * @return Array of completable futures of our actions.
    */
-  private def writeIntoKafkaWithNThreads(nThreads: Int,
-                                         topic: String,
-                                         reader: Iterator[String],
-                                         url: String): Array[CompletableFuture[Unit]] = {
+  private def writeIntoKafkaWithNThreads(nThreads: Int, topic: String,
+                                         reader: Iterator[String], url: String): Array[CompletableFuture[Unit]] = {
     val futures = new Array[CompletableFuture[Unit]](nThreads)
     val executor = Executors.newFixedThreadPool(nThreads)
-    for {
-      i <- 0 until nThreads
-    } {
+    for {i <- 0 until nThreads} {
       val properties = buildProperties(url)
       setUpKafkaProducer(i, futures, properties, reader, executor, topic)
     }

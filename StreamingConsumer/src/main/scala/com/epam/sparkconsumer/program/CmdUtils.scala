@@ -41,7 +41,7 @@ object CmdUtils {
     cmdParser.parse(Options, args)
   }
 
-   /**
+  /**
    * Checks if there are enough arguments to run this program.
    *
    * @param cmdLine command line object.

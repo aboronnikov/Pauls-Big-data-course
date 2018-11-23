@@ -1,11 +1,12 @@
 package com.epam.sparkconsumer.program
 
+import scala.concurrent.duration._
+
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.log4j.Logger
+
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.streaming.Trigger
-
-import scala.concurrent.duration._
 
 /**
  * A simple consumer that reads from our kafka topic, using spark streaming.
@@ -18,6 +19,23 @@ object Consumer {
   private val Log = Logger.getLogger(Consumer.getClass)
 
   /**
+   * Helper string constants, nothing more.
+   */
+  private val KafkaBootstrapServersStr = "kafka.bootstrap.servers"
+  private val KafkaStr = "kafka"
+  private val SubscribeStr = "subscribe"
+  private val CastValueAsStringStr = "CAST(value AS String)"
+  private val PathStr = "path"
+  private val CheckPointLocationStr = "checkpointLocation"
+  private val StartingOffsetsStr = "startingOffsets"
+  private val EarliestStr = "earliest"
+
+  /**
+   * Checkpoint location path on hdfs.
+   */
+  private val CheckPointLocationPathStr = "/tmp/checkpoint"
+
+  /**
    * Saves file to hdfs by either 1) streaming or 2) batching, depending on the doBatch flag.
    *
    * @param spark      currentSparkSession
@@ -27,34 +45,29 @@ object Consumer {
    * @param fileFormat file format to save in
    * @param filePath   path to the file on hdfs
    */
-  def saveFileToHdfs(spark: SparkSession,
-                     doBatch: Boolean,
-                     url: String,
-                     topic: String,
-                     fileFormat: String,
-                     filePath: String): Unit = {
+  def saveFileToHdfs(spark: SparkSession, doBatch: Boolean, url: String, topic: String, fileFormat: String, filePath: String): Unit = {
     if (doBatch) {
       spark.read
-        .format("kafka")
-        .option("kafka.bootstrap.servers", url)
-        .option("subscribe", topic)
+        .format(KafkaStr)
+        .option(KafkaBootstrapServersStr, url)
+        .option(SubscribeStr, topic)
         .load()
-        .selectExpr("CAST(value AS String)")
+        .selectExpr(CastValueAsStringStr)
         .write
         .format(fileFormat)
         .save(filePath)
     } else {
       spark.readStream
-        .format("kafka")
-        .option("kafka.bootstrap.servers", url)
-        .option("subscribe", topic)
-        .option("startingOffsets", "earliest")
+        .format(KafkaStr)
+        .option(KafkaBootstrapServersStr, url)
+        .option(SubscribeStr, topic)
+        .option(StartingOffsetsStr, EarliestStr)
         .load()
-        .selectExpr("CAST(value AS String)")
+        .selectExpr(CastValueAsStringStr)
         .writeStream
         .format(fileFormat)
-        .option("path", filePath)
-        .option("checkpointLocation", "/tmp/checkpoint")
+        .option(PathStr, filePath)
+        .option(CheckPointLocationStr, CheckPointLocationPathStr)
         .trigger(Trigger.ProcessingTime(1.second))
         .start()
         .processAllAvailable()
@@ -85,7 +98,9 @@ object Consumer {
 
       saveFileToHdfs(spark, doBatch, url, topic, fileFormat, filePath)
 
-      val elapsed = (System.nanoTime - start) / 1e9d
+      val nanoSecsInSecond = 1e9d
+
+      val elapsed = (System.nanoTime - start) / nanoSecsInSecond
       Log.info("Elapsed: " + elapsed)
 
       spark.stop()

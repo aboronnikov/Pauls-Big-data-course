@@ -1,4 +1,4 @@
-package com.epam.sparkproducer.api
+package com.epam.sparkproducer.program
 
 import org.apache.kafka.clients.producer.{Callback, RecordMetadata}
 import org.apache.log4j.Logger

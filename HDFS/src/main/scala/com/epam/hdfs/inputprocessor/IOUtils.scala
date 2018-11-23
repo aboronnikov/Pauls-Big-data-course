@@ -10,7 +10,6 @@ import org.apache.parquet.hadoop.ParquetWriter
 import org.apache.parquet.hadoop.example.GroupWriteSupport
 import org.apache.parquet.schema.{MessageType, MessageTypeParser}
 import resource.managed
-
 import scala.io.Source
 
 /**
