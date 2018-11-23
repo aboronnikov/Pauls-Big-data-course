@@ -1,11 +1,9 @@
 package com.epam.sparkproducer.api
 
 import java.util.concurrent.{CompletableFuture, ExecutorService}
-import java.util.function.Supplier
 
-import org.apache.commons.lang3.StringUtils
+import com.epam.sparkproducer.program.MessageCallback
 import org.apache.kafka.clients.producer.{Producer, ProducerRecord}
-
 import scala.compat.java8.FunctionConverters._
 
 /**
@@ -34,9 +32,7 @@ object KafkaProducerUtils {
    * @param line          a line from csv file.
    * @param topic         the kafka topic that we are subscribed to.
    */
-  private def send(kafkaProducer: Producer[String, String],
-                   line: String,
-                   topic: String): Unit = {
+  private def send(kafkaProducer: Producer[String, String], line: String, topic: String): Unit = {
     val key = extractKeyFromLine(line)
     val record = new ProducerRecord[String, String](topic, key, line)
     kafkaProducer.send(record, MessageCallback)
@@ -49,9 +45,7 @@ object KafkaProducerUtils {
    * @param reader        the reader that reads the lines from the file specified.
    * @param topic         topic to write to.
    */
-  private def writeLinesToKafkaThreadSafe(kafkaProducer: Producer[String, String],
-                                          reader: Iterator[String],
-                                          topic: String): Unit = {
+  private def writeLinesToKafkaThreadSafe(kafkaProducer: Producer[String, String], reader: Iterator[String], topic: String): Unit = {
     var line: String = null
     reader.synchronized {
       line = reader.next()
@@ -73,10 +67,8 @@ object KafkaProducerUtils {
    * @param topic         the topic that we are subscribed to.
    * @return returns a future, so that we can wait on it for completion.
    */
-  def writeToKafkaAsync(reader: Iterator[String],
-                        kafkaProducer: Producer[String, String],
-                        executor: ExecutorService,
-                        topic: String): CompletableFuture[Unit] = {
+  def writeToKafkaAsync(reader: Iterator[String], kafkaProducer: Producer[String, String],
+                        executor: ExecutorService, topic: String): CompletableFuture[Unit] = {
     CompletableFuture.supplyAsync((() =>
       writeLinesToKafkaThreadSafe(kafkaProducer, reader, topic)).asJava, executor
     )
