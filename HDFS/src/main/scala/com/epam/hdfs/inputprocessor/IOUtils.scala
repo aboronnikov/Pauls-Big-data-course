@@ -10,7 +10,6 @@ import org.apache.parquet.hadoop.ParquetWriter
 import org.apache.parquet.hadoop.example.GroupWriteSupport
 import org.apache.parquet.schema.{MessageType, MessageTypeParser}
 import resource.managed
-
 import scala.io.Source
 
 /**
@@ -25,7 +24,9 @@ object IOUtils {
    * @param newFilePath the path to the new file (name of the new file).
    * @param schema      schema of the data that will be written to the file.
    */
-  def writeGroupsToFile(groupStream: Iterator[Group], newFilePath: String, schema: MessageType): Unit = {
+  def writeGroupsToFile(groupStream: Iterator[Group],
+                        newFilePath: String,
+                        schema: MessageType): Unit = {
     if (new File(newFilePath).exists()) {
       throw new IOException(newFilePath + ".parquet already exists.")
     }
