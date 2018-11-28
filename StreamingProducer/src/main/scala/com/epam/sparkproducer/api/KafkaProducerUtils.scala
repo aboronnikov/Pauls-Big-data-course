@@ -1,9 +1,12 @@
 package com.epam.sparkproducer.api
 
-import java.util.concurrent.{CompletableFuture, ExecutorService}
+import java.time.LocalDateTime
+import java.util.concurrent.{CompletableFuture, ExecutorService, ThreadLocalRandom}
 
 import com.epam.sparkproducer.program.MessageCallback
+import com.google.gson.Gson
 import org.apache.kafka.clients.producer.{Producer, ProducerRecord}
+
 import scala.compat.java8.FunctionConverters._
 
 /**
@@ -11,6 +14,19 @@ import scala.compat.java8.FunctionConverters._
  * Provides functionality to write into kafka topic asynchronously.
  */
 object KafkaProducerUtils {
+
+  val gson = new Gson()
+
+  /**
+   * A simple dto class, with hourly timestamp and data.
+   * P.S.: I can't declare this class inside the function where it's used.
+   * There's a bug that prevents me from converting this type's objects into json if I do it.
+   *
+   * @param hour the current hour
+   * @param line data record
+   */
+  case class CsvRecordDto(hour: Int, line: String)
+
   /**
    * Simply extracts the key from a line.
    * A key from a line in the form of "a,..." is "a",
@@ -25,6 +41,8 @@ object KafkaProducerUtils {
     line.substring(startIndex, commaIndex)
   }
 
+  val random = ThreadLocalRandom.current()
+
   /**
    * Sends a line into kafka topic, using a kafka producer.
    *
@@ -34,7 +52,8 @@ object KafkaProducerUtils {
    */
   private def send(kafkaProducer: Producer[String, String], line: String, topic: String): Unit = {
     val key = extractKeyFromLine(line)
-    val record = new ProducerRecord[String, String](topic, key, line)
+    val csvRecord = gson.toJson(CsvRecordDto(random.nextInt(24), line))
+    val record = new ProducerRecord[String, String](topic, key, csvRecord)
     kafkaProducer.send(record, MessageCallback)
   }
 

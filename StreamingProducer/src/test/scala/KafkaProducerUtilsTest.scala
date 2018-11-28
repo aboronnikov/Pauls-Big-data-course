@@ -3,12 +3,16 @@ import java.util.Collections
 import java.util.concurrent._
 
 import com.epam.sparkproducer.api.KafkaProducerUtils
+import com.epam.sparkproducer.api.KafkaProducerUtils.CsvRecordDto
+import com.google.gson.Gson
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.{Producer, _}
 import org.apache.kafka.common.{Metric, MetricName, PartitionInfo, TopicPartition}
 import org.junit.{Assert, Test}
 import org.mockito.Mockito
 import org.scalatest.junit.JUnitSuite
+
+import scala.compat.java8.FunctionConverters._
 
 /**
  * Test class for KafkaProducerUtils.
@@ -85,9 +89,16 @@ class KafkaProducerUtilsTest extends JUnitSuite {
     val future1 = KafkaProducerUtils.writeToKafkaAsync(reader, producer1, executor, "test")
     val future2 = KafkaProducerUtils.writeToKafkaAsync(reader, producer2, executor, "test")
     CompletableFuture.allOf(future1, future2).join()
+
     val expected = Array("key,a", "key,b", "key,c", "key,d", "key,e", "key,f")
-    expected.foreach(el => {
-      Assert.assertTrue(MockProducer.threadSafeSet.contains(el))
-    })
+
+    Assert.assertEquals(expected.length, MockProducer.threadSafeSet.size())
+
+    val gson = new Gson
+
+    MockProducer.threadSafeSet.forEach(((el: String) => {
+      val csvRecord = gson.fromJson(el, classOf[CsvRecordDto])
+      Assert.assertTrue(expected.contains(csvRecord.line))
+    }).asJava)
   }
 }

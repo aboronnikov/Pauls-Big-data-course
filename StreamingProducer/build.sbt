@@ -15,10 +15,11 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-cli" % "commons-cli" % "1.2",
   "org.apache.commons" % "commons-lang3" % "3.0",
-  "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.0"
+  "org.scala-lang.modules" %% "scala-java8-compat" % "0.9.0",
+  "com.google.code.gson" % "gson" % "2.8.5"
 )
 
-coverageEnabled := true
+coverageEnabled := false
 coverageExcludedPackages := "com.epam.sparkproducer.program"
 
 scapegoatVersion in ThisBuild := "1.3.2"

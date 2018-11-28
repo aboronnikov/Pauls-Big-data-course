@@ -1,10 +1,10 @@
 package com.epam.sparkconsumer.program
 
-import scala.concurrent.duration._
+import com.google.gson.Gson
 
+import scala.concurrent.duration._
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.log4j.Logger
-
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.streaming.Trigger
 
@@ -35,6 +35,8 @@ object Consumer {
    */
   private val CheckPointLocationPathStr = "/tmp/checkpoint"
 
+  val gson = new Gson()
+
   /**
    * Saves file to hdfs by either 1) streaming or 2) batching, depending on the doBatch flag.
    *
@@ -46,6 +48,7 @@ object Consumer {
    * @param filePath   path to the file on hdfs
    */
   def saveFileToHdfs(spark: SparkSession, doBatch: Boolean, url: String, topic: String, fileFormat: String, filePath: String): Unit = {
+    import spark.implicits._
     if (doBatch) {
       spark.read
         .format(KafkaStr)
@@ -53,6 +56,8 @@ object Consumer {
         .option(SubscribeStr, topic)
         .load()
         .selectExpr(CastValueAsStringStr)
+        .as[String]
+        .map((value: String) => gson.fromJson(value, classOf[CsvRecordDto]))
         .write
         .format(fileFormat)
         .save(filePath)
@@ -64,6 +69,8 @@ object Consumer {
         .option(StartingOffsetsStr, EarliestStr)
         .load()
         .selectExpr(CastValueAsStringStr)
+        .as[String]
+        .map((value: String) => gson.fromJson(value, classOf[CsvRecordDto]))
         .writeStream
         .format(fileFormat)
         .option(PathStr, filePath)

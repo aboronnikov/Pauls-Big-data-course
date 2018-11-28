@@ -13,10 +13,12 @@ libraryDependencies ++= Seq(
   "log4j" % "log4j" % "1.2.17",
   "org.scala-lang" % "scala-library" % "2.11.7",
   "com.jsuereth" %% "scala-arm" % "2.0",
-  "commons-cli" % "commons-cli" % "1.2"
+  "commons-cli" % "commons-cli" % "1.2",
+  "org.elasticsearch" %% "elasticsearch-spark-20" % "6.5.1",
+  "com.google.code.gson" % "gson" % "2.8.5"
 )
 
-coverageEnabled := true
+coverageEnabled := false
 
 coverageExcludedPackages := "com.epam.sparkconsumer.program"
 

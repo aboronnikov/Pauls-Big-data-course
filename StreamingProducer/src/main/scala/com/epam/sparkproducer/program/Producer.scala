@@ -81,9 +81,8 @@ object Producer {
     futures(threadId).whenComplete(((result: Unit, e: Throwable) =>
       if (e != null && Log.isInfoEnabled) {
         Log.info(e.getMessage)
+        closeProducer(kafkaProducer)
       }).asJava)
-
-    closeProducer(kafkaProducer)
   }
 
   /**
