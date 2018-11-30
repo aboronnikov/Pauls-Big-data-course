@@ -4,15 +4,17 @@ import org.apache.commons.cli.{CommandLine, DefaultParser, Options}
 
 object CmdUtils {
 
+  private val HasArg = true
+  private val NoArg = true
   /**
    * Command line options available for this program.
    */
   val Options: Options = new Options()
-    .addOption(ArgConstants.SchemaPathArg, true, "Specifies the path to the schema file. Required.")
-    .addOption(ArgConstants.CsvPathArg, true, "Specified the path to the csv file. Required.")
-    .addOption(ArgConstants.CsvSeparatorArg, true, "Specifies the separator used in the csv file. Required.")
-    .addOption(ArgConstants.NewFilePathArg, true, "Specifies the path to the new parquet file. Required.")
-    .addOption(ArgConstants.HelpArg, false, "Argument to call when you need help for this tool.")
+    .addOption(ArgConstants.SchemaPathArg, HasArg, "Specifies the path to the schema file. Required.")
+    .addOption(ArgConstants.CsvPathArg, HasArg, "Specified the path to the csv file. Required.")
+    .addOption(ArgConstants.CsvSeparatorArg, HasArg, "Specifies the separator used in the csv file. Required.")
+    .addOption(ArgConstants.NewFilePathArg, HasArg, "Specifies the path to the new parquet file. Required.")
+    .addOption(ArgConstants.HelpArg, NoArg, "Argument to call when you need help for this tool.")
 
   /**
    * Parses user provided arguments.

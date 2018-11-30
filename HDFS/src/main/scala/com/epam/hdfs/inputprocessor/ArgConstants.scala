@@ -13,7 +13,8 @@ private object ArgConstants {
    */
   val CsvPathArg = "csvPath"
   /**
-   * New file name argument, used to specify the name of the new file, that will be created and written to.
+   * New file name argument, used to specify the name of the new file,
+   * that will be created and written to.
    */
   val NewFilePathArg = "newFilePath"
   /**

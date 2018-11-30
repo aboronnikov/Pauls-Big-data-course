@@ -1,8 +1,7 @@
 package com.epam.hdfs.inputprocessor
 
-import java.io.IOException
-
 import com.epam.hdfs.converter.CsvToParquetConverter
+import java.io.IOException
 import org.apache.commons.cli._
 import org.apache.log4j.Logger
 import resource.managed
@@ -21,13 +20,17 @@ object Runner {
   /**
    * The main function of this utility that converts csv to parquet format.
    */
-  private def convertCsvToParquet(csvFilePath: String, csvSeparator: String, newFilePath: String, schemaFilePath: String): Unit = {
+  private def convertCsvToParquet(csvFilePath: String,
+                                  csvSeparator: String,
+                                  newFilePath: String,
+                                  schemaFilePath: String): Unit = {
     val schema = IOUtils.readSchemaFromFile(schemaFilePath)
     for {
       source <- managed(Source.fromFile(csvFilePath))
     } {
       val fileStream = source.getLines
-      val groupStream = CsvToParquetConverter.transformIntoGroupStream(fileStream, csvSeparator, schema)
+      val groupStream =
+        CsvToParquetConverter.transformIntoGroupStream(fileStream, csvSeparator, schema)
       IOUtils.writeGroupsToFile(groupStream, newFilePath, schema)
     }
   }
@@ -36,7 +39,8 @@ object Runner {
    * Takes action according to what user entered.
    * If they entered the 4 necessary arguments then runs the program.
    * If they asked for help, then prints the tool's manual.
-   * If they didn't provide good arguments, then exits the program and tells about the bad arguments.
+   * If they didn't provide good arguments,
+   * then exits the program and tells about the bad arguments.
    *
    * @param args user input
    */

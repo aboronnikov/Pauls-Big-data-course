@@ -18,7 +18,10 @@ object CsvToParquetConverter {
    * @param fieldType type of the field, according to the schema
    * @param fieldName name of the field from the schema
    */
-  private def writeCorrectGroupValue(group: Group, value: String, fieldType: PrimitiveTypeName, fieldName: String): Unit = {
+  private def writeCorrectGroupValue(group: Group,
+                                     value: String,
+                                     fieldType: PrimitiveTypeName,
+                                     fieldName: String): Unit = {
     if (value.nonEmpty) {
       fieldType match {
         case PrimitiveTypeName.INT32 => group.append(fieldName, value.toInt)
@@ -60,7 +63,9 @@ object CsvToParquetConverter {
    * @param schema       schema of data in csv.
    * @return a stream of groups to be written to a file.
    */
-  def transformIntoGroupStream(stream: Iterator[String], csvSeparator: String, schema: MessageType): Iterator[Group] = {
+  def transformIntoGroupStream(stream: Iterator[String],
+                               csvSeparator: String,
+                               schema: MessageType): Iterator[Group] = {
     val numberOfLinesToSkip = 1
     stream
       .drop(numberOfLinesToSkip) // skip the first line
