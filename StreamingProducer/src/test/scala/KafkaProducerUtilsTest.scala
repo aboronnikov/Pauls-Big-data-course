@@ -1,18 +1,17 @@
+import java.lang.Boolean
 import java.util
-import java.util.Collections
 import java.util.concurrent._
+import java.util.{Collections, Map}
 
 import com.epam.sparkproducer.api.KafkaProducerUtils
 import com.epam.sparkproducer.api.KafkaProducerUtils.CsvRecordDto
+import com.epam.sparkproducer.misc.LambdaHelpers.{funToConsumer, funToFunction, funToSupplier}
 import com.google.gson.Gson
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.{Producer, _}
 import org.apache.kafka.common.{Metric, MetricName, PartitionInfo, TopicPartition}
-import org.junit.{Assert, Test}
-import org.mockito.Mockito
+import org.junit.{Assert, Before, Test}
 import org.scalatest.junit.JUnitSuite
-
-import scala.compat.java8.FunctionConverters._
 
 /**
  * Test class for KafkaProducerUtils.
@@ -27,7 +26,7 @@ class KafkaProducerUtilsTest extends JUnitSuite {
     /**
      * That place where producers send their messages.
      */
-    val threadSafeSet = Collections.newSetFromMap(new ConcurrentHashMap[String, java.lang.Boolean]())
+    val threadSafeSet = Collections.newSetFromMap(new ConcurrentHashMap[String, Boolean]())
   }
 
   /**
@@ -75,30 +74,58 @@ class KafkaProducerUtilsTest extends JUnitSuite {
   }
 
   /**
-   * This method tests the writeToKafkaAsync method.
-   * We use 2 threads and 2 producers to write several records and at the end we check that everything has
-   * arrived successfully.
+   * Type definitions to reduce code complexity.
+   */
+  private type StringProducer = Producer[String, String]
+  private type ProducerMap = Map[Thread, StringProducer]
+  private type ThreadLocalProducer = ThreadLocal[StringProducer]
+
+  /**
+   * Variables necessary to run tests.
+   */
+  private var threadLocalProducer: ThreadLocalProducer = _
+  private val threadLocalMap = new ConcurrentHashMap[Thread, StringProducer]()
+  private val gson = new Gson()
+
+  /**
+   * Sets up all the necessary variables.
+   */
+  @Before
+  def setUp(): Unit = {
+    val computeProducerIfAbsent = funToSupplier(
+      () => threadLocalMap.computeIfAbsent(
+        Thread.currentThread(), funToFunction((thread: Thread) => new MockProducer)
+      )
+    )
+
+    threadLocalProducer = ThreadLocal.withInitial(computeProducerIfAbsent)
+  }
+
+  /**
+   * The test for writeToKafkaInParallel.
    */
   @Test
-  def writeToKafkaAsyncTest(): Unit = {
-    val reader = Mockito.mock(classOf[Iterator[String]])
-    Mockito.when(reader.next()).thenReturn("key,a", "key,b", "key,c", "key,d", "key,e", "key,f", null)
-    val producer1 = new MockProducer
-    val producer2 = new MockProducer
-    val executor = Executors.newFixedThreadPool(2)
-    val future1 = KafkaProducerUtils.writeToKafkaAsync(reader, producer1, executor, "test")
-    val future2 = KafkaProducerUtils.writeToKafkaAsync(reader, producer2, executor, "test")
-    CompletableFuture.allOf(future1, future2).join()
+  def writeToKafkaInParallelTest(): Unit = {
+    val expectedList = util.Arrays.asList("key,a", "key,b", "key,c", "key,d", "key,e", "key,f")
+    val lineStream = expectedList.stream()
 
-    val expected = Array("key,a", "key,b", "key,c", "key,d", "key,e", "key,f")
+    KafkaProducerUtils.writeToKafkaInParallel(
+      nThreads = 6,
+      topic = "test",
+      producer = threadLocalProducer,
+      lineStream = lineStream
+    )
 
-    Assert.assertEquals(expected.length, MockProducer.threadSafeSet.size())
+    val resultSet = MockProducer.threadSafeSet
+    Assert.assertEquals(expectedList.size(), resultSet.size())
 
-    val gson = new Gson
-
-    MockProducer.threadSafeSet.forEach(((el: String) => {
-      val csvRecord = gson.fromJson(el, classOf[CsvRecordDto])
-      Assert.assertTrue(expected.contains(csvRecord.line))
-    }).asJava)
+    resultSet
+      .stream()
+      .forEach(
+        funToConsumer((line: String) => {
+          val record = gson.fromJson(line, classOf[CsvRecordDto])
+          Assert.assertTrue(expectedList.contains(record.line))
+        })
+      )
   }
 }

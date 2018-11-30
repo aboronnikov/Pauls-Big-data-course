@@ -47,7 +47,7 @@ object CmdUtils {
    * @param cmdLine command line object.
    * @return true of false, telling whether there are enough arguments.
    */
-  def areArgumentsGood(cmdLine: CommandLine): Boolean = {
+  def checkArguments(cmdLine: CommandLine): Unit = {
     val allArgumentsArePresent =
       cmdLine.hasOption(Topic) &&
         cmdLine.hasOption(Url) &&
@@ -57,14 +57,18 @@ object CmdUtils {
     val nThreadsStr = cmdLine.getOptionValue(NThreads)
     val nThreadsIsAllDigits = NumberUtils.isDigits(nThreadsStr)
 
-    allArgumentsArePresent && nThreadsIsAllDigits
+    if (!allArgumentsArePresent || !nThreadsIsAllDigits) {
+      throw new IllegalArgumentException("You provided bad arguments")
+    }
   }
 
   /**
-   * Prints help.
+   * Prints help if the user specified the -help flag.
    */
-  def printHelp(): Unit = {
-    val helpFormatter = new HelpFormatter
-    helpFormatter.printHelp("Producer.", Options)
+  def printHelpIfNeeded(cmdLine: CommandLine): Unit = {
+    if (cmdLine.hasOption(Help)) {
+      val helpFormatter = new HelpFormatter
+      helpFormatter.printHelp("Consumer.", Options)
+    }
   }
 }

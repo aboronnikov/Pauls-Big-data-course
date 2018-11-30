@@ -1,14 +1,13 @@
 package com.epam.sparkproducer.program
 
-import java.util.Properties
-import java.util.concurrent.{CompletableFuture, Executors, ExecutorService}
+import java.nio.file.{Files, Paths}
+import java.util.concurrent._
+import java.util.{Map, Properties}
 
 import com.epam.sparkproducer.api.KafkaProducerUtils
+import com.epam.sparkproducer.misc.LambdaHelpers.{funToConsumer, funToFunction, funToSupplier}
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig}
-import org.apache.log4j.Logger
 import resource.managed
-import scala.compat.java8.FunctionConverters._
-import scala.io.Source
 
 /**
  * Producer class.
@@ -17,9 +16,11 @@ import scala.io.Source
 object Producer {
 
   /**
-   * Default logger.
+   * Some type definitions, to shorten our lines of code.
    */
-  private val Log = Logger.getLogger(Producer.getClass)
+  private type StringProducer = KafkaProducer[String, String]
+  private type ProducerMap = Map[Thread, StringProducer]
+  private type ThreadLocalProducer = ThreadLocal[StringProducer]
 
   /**
    * This method builds properties for our kafka producers.
@@ -44,91 +45,58 @@ object Producer {
   }
 
   /**
-   * Properly closes kafka producer.
+   * Builds a thread local producer instance.
    *
-   * @param kafkaProducer kafka producer that writes messages into our topic.
+   * @return ThreadLocal[KafkaProducer].
    */
-  private def closeProducer(kafkaProducer: KafkaProducer[String, String]): Unit = {
-    try {
-      // can't use try with resources here, because it's Closeable but not AutoCloseable
-      kafkaProducer.close()
-    } catch {
-      case e: InterruptedException =>
-        Thread.currentThread().interrupt()
-        Log.info("Failed to run a producer.")
-        Log.info(e.getMessage)
+  private def buildThreadLocalProducer(url: String,
+                                       threadLocalMap: ProducerMap): ThreadLocalProducer = {
+    val properties = buildProperties(url)
+    val computeProducerIfAbsent = funToSupplier(() => {
+      threadLocalMap.computeIfAbsent(
+        Thread.currentThread(), funToFunction((thread: Thread) => new StringProducer(properties))
+      )
     }
+    )
+    val threadLocalProducer = ThreadLocal.withInitial(computeProducerIfAbsent)
+    threadLocalProducer
   }
 
   /**
-   * Sets up a kafka producer.
-   * It first creates the producer then uses it to write in to a kafka topic asynchronously.
+   * Closes thread local producers.
    *
-   * @param threadId   the id of this producers thread.
-   * @param futures    the array of futures.
-   * @param properties properties of our producer.
-   * @param reader     file reader.
-   * @param executor   executor, so that we don't use only the default number of threads.
-   * @param topic      name of the topic.
+   * @param threadLocalMap map from thread to producer.
    */
-  private def setUpKafkaProducer(threadId: Int, futures: Array[CompletableFuture[Unit]], properties: Properties,
-                                 reader: Iterator[String], executor: ExecutorService, topic: String): Unit = {
-
-    val kafkaProducer = new KafkaProducer[String, String](properties)
-
-    futures(threadId) = KafkaProducerUtils.writeToKafkaAsync(reader, kafkaProducer, executor, topic)
-
-    futures(threadId).whenComplete(((result: Unit, e: Throwable) =>
-      if (e != null && Log.isInfoEnabled) {
-        Log.info(e.getMessage)
-        closeProducer(kafkaProducer)
-      }).asJava)
+  private def closeThreadLocalResources(threadLocalMap: ProducerMap): Unit = {
+    val closeProducer = funToConsumer((producer: StringProducer) => producer.close())
+    threadLocalMap
+      .values()
+      .forEach(closeProducer)
   }
 
   /**
-   * This method creates nThreads threads and asynchronously writes to a kafka topic, using nThreads producers.
-   *
-   * @param nThreads number of threads, specified on command line.
-   * @param topic    topic name.
-   * @param reader   reader for the file we're reading from.
-   * @param url      topic's url.
-   * @return Array of completable futures of our actions.
-   */
-  private def writeIntoKafkaWithNThreads(nThreads: Int, topic: String,
-                                         reader: Iterator[String], url: String): Array[CompletableFuture[Unit]] = {
-    val futures = new Array[CompletableFuture[Unit]](nThreads)
-    val executor = Executors.newFixedThreadPool(nThreads)
-    for {i <- 0 until nThreads} {
-      val properties = buildProperties(url)
-      setUpKafkaProducer(i, futures, properties, reader, executor, topic)
-    }
-    futures
-  }
-
-  /**
-   * Entry point of our program.
+   * The entry point of the program.
    *
    * @param args cmd args.
    */
   def main(args: Array[String]): Unit = {
     val cmdLine = CmdUtils.parserArgs(args)
-    if (CmdUtils.areArgumentsGood(cmdLine)) {
-      val topic = cmdLine.getOptionValue(CmdUtils.Topic)
-      val url = cmdLine.getOptionValue(CmdUtils.Url)
-      val nThreadsStr = cmdLine.getOptionValue(CmdUtils.NThreads)
-      val nThreads = Integer.parseInt(nThreadsStr)
-      val filePath = cmdLine.getOptionValue(CmdUtils.FilePath)
+    CmdUtils.printHelpIfNeeded(cmdLine)
+    CmdUtils.checkArguments(cmdLine) // I don't catch the exception on purpose.
 
-      for {
-        reader <- managed(Source.fromFile(filePath))
-      } {
-        val futures = writeIntoKafkaWithNThreads(nThreads, topic, reader.getLines(), url)
-        CompletableFuture.allOf(futures: _*).join()
-      }
-    } else if (cmdLine.hasOption(CmdUtils.Help)) {
-      CmdUtils.printHelp()
-    } else if (Log.isInfoEnabled) {
-      Log.info("Ask help for how to use this.")
+    val topic = cmdLine.getOptionValue(CmdUtils.Topic)
+    val url = cmdLine.getOptionValue(CmdUtils.Url)
+    val nThreadsStr = cmdLine.getOptionValue(CmdUtils.NThreads)
+    val nThreads = Integer.parseInt(nThreadsStr)
+    val filePath = cmdLine.getOptionValue(CmdUtils.FilePath)
+
+    for {
+      lineStream <- managed(Files.lines(Paths.get(filePath)))
+    } {
+      val threadLocalMap = new ConcurrentHashMap[Thread, StringProducer]()
+      val threadLocalProducer = buildThreadLocalProducer(url, threadLocalMap)
+      KafkaProducerUtils.writeToKafkaInParallel(nThreads, threadLocalProducer, lineStream, topic)
+      closeThreadLocalResources(threadLocalMap)
     }
   }
 }

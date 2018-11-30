@@ -19,7 +19,7 @@ object MessageCallback extends Callback {
    * @param exception exception, if it occurred, otherwise null in its place.
    */
   override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
-    if (exception != null && Log.isInfoEnabled) {
+    if (exception != null) {
       Log.error("Message dispatch was not successful", exception)
     } else if (Log.isInfoEnabled) {
       Log.info(

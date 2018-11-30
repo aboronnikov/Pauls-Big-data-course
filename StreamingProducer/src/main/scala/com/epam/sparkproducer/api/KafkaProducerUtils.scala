@@ -1,13 +1,12 @@
 package com.epam.sparkproducer.api
 
-import java.time.LocalDateTime
-import java.util.concurrent.{CompletableFuture, ExecutorService, ThreadLocalRandom}
+import java.util.concurrent.{ForkJoinPool, ThreadLocalRandom}
+import java.util.stream._
 
+import com.epam.sparkproducer.misc.LambdaHelpers.{funToCallable, funToConsumer}
 import com.epam.sparkproducer.program.MessageCallback
 import com.google.gson.Gson
 import org.apache.kafka.clients.producer.{Producer, ProducerRecord}
-
-import scala.compat.java8.FunctionConverters._
 
 /**
  * Utility class.
@@ -15,17 +14,19 @@ import scala.compat.java8.FunctionConverters._
  */
 object KafkaProducerUtils {
 
-  val gson = new Gson()
+  /**
+   * Class for serializing csv data.
+   *
+   * @param hour hours.
+   * @param line line.
+   */
+  final case class CsvRecordDto(hour: Int, line: String)
 
   /**
-   * A simple dto class, with hourly timestamp and data.
-   * P.S.: I can't declare this class inside the function where it's used.
-   * There's a bug that prevents me from converting this type's objects into json if I do it.
-   *
-   * @param hour the current hour
-   * @param line data record
+   * Some type definitions, to shorten our lines of code.
    */
-  case class CsvRecordDto(hour: Int, line: String)
+  private type StringProducer = ThreadLocal[_ <: Producer[String, String]]
+  private type StringRecord = ProducerRecord[String, String]
 
   /**
    * Simply extracts the key from a line.
@@ -41,55 +42,42 @@ object KafkaProducerUtils {
     line.substring(startIndex, commaIndex)
   }
 
-  val random = ThreadLocalRandom.current()
+  /**
+   * Gson instance for this class.
+   */
+  private val Gson = new Gson()
 
   /**
-   * Sends a line into kafka topic, using a kafka producer.
+   * Writes a file stream into kafka in parallel.
    *
-   * @param kafkaProducer kafka producer that sends data.
-   * @param line          a line from csv file.
-   * @param topic         the kafka topic that we are subscribed to.
+   * @param nThreads   number of threads to use.
+   * @param producer   thread local producer instance.
+   * @param lineStream the stream of lines.
+   * @param topic      the topic to write to.
    */
-  private def send(kafkaProducer: Producer[String, String], line: String, topic: String): Unit = {
-    val key = extractKeyFromLine(line)
-    val csvRecord = gson.toJson(CsvRecordDto(random.nextInt(24), line))
-    val record = new ProducerRecord[String, String](topic, key, csvRecord)
-    kafkaProducer.send(record, MessageCallback)
-  }
+  def writeToKafkaInParallel(nThreads: Int,
+                             producer: StringProducer,
+                             lineStream: Stream[String],
+                             topic: String): Unit = {
+    val pool = new ForkJoinPool(nThreads)
 
-  /**
-   * Writes lines to a kafka topic, while synchronizing the access to the reader.
-   *
-   * @param kafkaProducer producer that sends messages to a topic.
-   * @param reader        the reader that reads the lines from the file specified.
-   * @param topic         topic to write to.
-   */
-  private def writeLinesToKafkaThreadSafe(kafkaProducer: Producer[String, String], reader: Iterator[String], topic: String): Unit = {
-    var line: String = null
-    reader.synchronized {
-      line = reader.next()
-    }
-    while (line != null) {
-      send(kafkaProducer, line, topic)
-      reader.synchronized {
-        line = reader.next()
-      }
-    }
-  }
+    val numberOfHours = 24
 
-  /**
-   * A method that asynchrnously writes to a kafka topic, using the specified kafka producer.
-   *
-   * @param reader        source file reader.
-   * @param kafkaProducer kafka producer that sends data into a kafka topic.
-   * @param executor      executor with the needed number of threads.
-   * @param topic         the topic that we are subscribed to.
-   * @return returns a future, so that we can wait on it for completion.
-   */
-  def writeToKafkaAsync(reader: Iterator[String], kafkaProducer: Producer[String, String],
-                        executor: ExecutorService, topic: String): CompletableFuture[Unit] = {
-    CompletableFuture.supplyAsync((() =>
-      writeLinesToKafkaThreadSafe(kafkaProducer, reader, topic)).asJava, executor
-    )
+    val sendLineToKafka = funToConsumer((line: String) => {
+      val key = extractKeyFromLine(line)
+      val random = ThreadLocalRandom.current() // get this thread's Random
+      val csvRecord = Gson.toJson(CsvRecordDto(hour = random.nextInt(numberOfHours), line))
+      val record = new StringRecord(topic, key, csvRecord)
+      val prod = producer.get()
+      prod.send(record, MessageCallback)
+    })
+
+    val task = funToCallable(() => {
+      lineStream
+        .parallel()
+        .forEach(sendLineToKafka)
+    })
+
+    pool.submit(task).get()
   }
 }

@@ -43,23 +43,31 @@ object CmdUtils {
 
   /**
    * Checks if there are enough arguments to run this program.
+   * Also checks that nTheads is a number.
    *
    * @param cmdLine command line object.
-   * @return true or false, telling whether there are enough arguments.
+   * @return true of false, telling whether there are enough arguments.
    */
-  def areArgumentsGood(cmdLine: CommandLine): Boolean = {
-    cmdLine.hasOption(Topic) &&
-      cmdLine.hasOption(Url) &&
-      cmdLine.hasOption(FilePath) &&
-      cmdLine.hasOption(FileFormat) &&
-      cmdLine.hasOption(DoBatch)
+  def checkArguments(cmdLine: CommandLine): Unit = {
+    val allArgumentsArePresent =
+      cmdLine.hasOption(Topic) &&
+        cmdLine.hasOption(Url) &&
+        cmdLine.hasOption(DoBatch) &&
+        cmdLine.hasOption(FilePath) &&
+        cmdLine.hasOption(FileFormat)
+
+    if (!allArgumentsArePresent) {
+      throw new IllegalArgumentException("You provided bad arguments")
+    }
   }
 
   /**
-   * Prints help.
+   * Prints help if the user specified the -help flag.
    */
-  def printHelp(): Unit = {
-    val helpFormatter = new HelpFormatter
-    helpFormatter.printHelp("Consumer.", Options)
+  def printHelpIfNeeded(cmdLine: CommandLine): Unit = {
+    if (cmdLine.hasOption(Help)) {
+      val helpFormatter = new HelpFormatter
+      helpFormatter.printHelp("Consumer.", Options)
+    }
   }
 }

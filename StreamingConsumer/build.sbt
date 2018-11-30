@@ -15,12 +15,13 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-cli" % "commons-cli" % "1.2",
   "org.elasticsearch" %% "elasticsearch-spark-20" % "6.5.1",
+  "org.apache.commons" % "commons-lang3" % "3.0",
   "com.google.code.gson" % "gson" % "2.8.5"
 )
 
-coverageEnabled := false
+coverageEnabled := true
 
-coverageExcludedPackages := "com.epam.sparkconsumer.program"
+coverageExcludedPackages := "com.epam.sparkconsumer.*"
 
 scapegoatVersion in ThisBuild := "1.3.2"
 scalaBinaryVersion in ThisBuild := "2.11"
