@@ -15,7 +15,7 @@ object Runner {
   /**
    * The default logger for this class.
    */
-  private val Log = Logger.getLogger(Runner.getClass)
+  private val log = Logger.getLogger(Runner.getClass)
 
   /**
    * The main function of this utility that converts csv to parquet format.
@@ -25,7 +25,7 @@ object Runner {
                                   newFilePath: String,
                                   schemaFilePath: String): Unit = {
     val schema = IOUtils.readSchemaFromFile(schemaFilePath)
-    for{
+    for {
       source <- managed(Source.fromFile(csvFilePath))
     } {
       val fileStream = source.getLines
@@ -56,14 +56,14 @@ object Runner {
         val newFilePath = cmdLine.getOptionValue(ArgConstants.NewFilePathArg)
         val schemaPath = cmdLine.getOptionValue(ArgConstants.SchemaPathArg)
         convertCsvToParquet(csvPath, csvSeparator, newFilePath, schemaPath)
-        Log.info(FeedbackMessageConstants.Success)
+        log.info(FeedbackMessageConstants.Success)
       } else {
-        Log.info(FeedbackMessageConstants.BadArgsProblem)
+        log.info(FeedbackMessageConstants.BadArgsProblem)
       }
     } catch {
-      case e: NumberFormatException => Log.info(FeedbackMessageConstants.BadNumberFormat, e)
-      case e: ParseException        => Log.info(FeedbackMessageConstants.BadArgsProblem, e)
-      case e: IOException           => Log.info(FeedbackMessageConstants.IOProblem, e)
+      case e: NumberFormatException => log.info(FeedbackMessageConstants.BadNumberFormat, e)
+      case e: ParseException        => log.info(FeedbackMessageConstants.BadArgsProblem, e)
+      case e: IOException           => log.info(FeedbackMessageConstants.IOProblem, e)
     }
   }
 }

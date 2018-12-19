@@ -24,13 +24,13 @@ object CsvToParquetConverter {
                                      fieldName: String): Unit = {
     if (value.nonEmpty) {
       fieldType match {
-        case PrimitiveTypeName.INT32                => group.append(fieldName, value.toInt)
-        case PrimitiveTypeName.INT64                => group.append(fieldName, value.toLong)
-        case PrimitiveTypeName.INT96                => group.append(fieldName, value)
-        case PrimitiveTypeName.DOUBLE               => group.append(fieldName, value.toDouble)
-        case PrimitiveTypeName.FLOAT                => group.append(fieldName, value.toFloat)
-        case PrimitiveTypeName.BINARY               => group.append(fieldName, value)
-        case PrimitiveTypeName.BOOLEAN              => group.append(fieldName, value.toBoolean)
+        case PrimitiveTypeName.INT32 => group.append(fieldName, value.toInt)
+        case PrimitiveTypeName.INT64 => group.append(fieldName, value.toLong)
+        case PrimitiveTypeName.INT96 => group.append(fieldName, value)
+        case PrimitiveTypeName.DOUBLE => group.append(fieldName, value.toDouble)
+        case PrimitiveTypeName.FLOAT => group.append(fieldName, value.toFloat)
+        case PrimitiveTypeName.BINARY => group.append(fieldName, value)
+        case PrimitiveTypeName.BOOLEAN => group.append(fieldName, value.toBoolean)
         case PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY => group.append(fieldName, value)
       }
     }

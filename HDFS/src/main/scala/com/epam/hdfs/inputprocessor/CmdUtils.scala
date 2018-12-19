@@ -18,6 +18,7 @@ object CmdUtils {
 
   /**
    * Parses user provided arguments.
+   *
    * @param args user input.
    * @return command line object.
    */

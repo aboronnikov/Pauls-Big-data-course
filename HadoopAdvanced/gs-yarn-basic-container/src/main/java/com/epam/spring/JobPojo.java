@@ -55,23 +55,37 @@ public class JobPojo {
      */
     @OnContainerStart
     public void calculateTopThreeHotels() throws IOException {
+        try {
+            System.out.println("FUCK1");
+            log.info("Starting to calculate our result");
 
-        String fileString = "/user/test.csv";
+            String fileString = "/user/test.csv";
 
-        List<Line> lines = new ArrayList<>();
-        Path path = new Path(fileString);
+            List<Line> lines = new ArrayList<>();
+            Path path = new Path(fileString);
 
-        try (FileSystem fs = FileSystem.get(configuration);
-             BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(path)))) {
+            try (FileSystem fs = FileSystem.get(configuration);
+                 BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(path)))) {
 
-            String line = br.readLine();
-            while (line != null) {
-                lines.add(getLine(line));
-                line = br.readLine();
+                String line = br.readLine();
+                while (line != null) {
+                    lines.add(getLine(line));
+                    line = br.readLine();
+                    if(lines.size() % 100 == 0) {
+                        log.info("Time of 100, size = " + lines.size());
+                    }
+                }
+                log.info("Got done reading the dataset");
+                System.out.println("FUCK2");
             }
-        }
 
-        List<Map.Entry<Line, Long>> results = TopThreeCalculator.calculateTopThree(lines);
-        results.forEach(entry -> log.info(entry.getValue()));
+            List<Map.Entry<Line, Long>> results = TopThreeCalculator.calculateTopThree(lines);
+            results.forEach(entry -> log.info(entry.getValue()));
+
+            log.info("Got done processing the dataset");
+            System.out.println("FUCK3");
+        } catch (Exception e) {
+            log.info("YOUR FUCKING EXCEPTION", e);
+        }
     }
 }
