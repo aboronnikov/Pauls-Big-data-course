@@ -18,7 +18,7 @@ scalaBinaryVersion in ThisBuild := "2.12"
 
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case x                            => MergeStrategy.first
+  case x                           => MergeStrategy.first
 }
 
 libraryDependencies ++= Seq(

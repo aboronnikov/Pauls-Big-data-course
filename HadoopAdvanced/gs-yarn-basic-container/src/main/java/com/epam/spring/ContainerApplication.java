@@ -12,21 +12,23 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 public class ContainerApplication {
 
-	/**
-	 * Entry point into our container application.
-	 * @param args cmd args.
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(ContainerApplication.class, args);
-	}
+    /**
+     * Entry point into our container application.
+     *
+     * @param args cmd args.
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(ContainerApplication.class, args);
+    }
 
-	/**
-	 * Gets the bean that executes all the necessary actions.
-	 * @return the bean from the description.
-	 */
-	@Bean
-	public JobPojo jobPojo() {
-		return new JobPojo();
-	}
+    /**
+     * Gets the bean that executes all the necessary actions.
+     *
+     * @return the bean from the description.
+     */
+    @Bean
+    public JobPojo jobPojo() {
+        return new JobPojo();
+    }
 
 }

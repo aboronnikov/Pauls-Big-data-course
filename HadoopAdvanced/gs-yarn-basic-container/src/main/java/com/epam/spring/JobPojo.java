@@ -8,13 +8,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.yarn.annotation.OnContainerStart;
 import org.springframework.yarn.annotation.YarnComponent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,57 +35,25 @@ public class JobPojo {
     @Autowired
     private Configuration configuration;
 
-    /**
-     * Utility function that converts a String line into a line abstraction.
-     *
-     * @param line string line.
-     * @return line abstraction.
-     */
-    private static Line getLine(String line) {
-        return new Line(line);
-    }
+    @Value("${my.container.filePath}")
+    private String filePath;
 
     /**
      * This is the action to be executed.
      * It first reads all of the lines from our file,
      * converts them to line abstraction,
      * and then executes the calculateTopThree function on them.
-     *
-     * @throws IOException exception that is propagated to the user in case of failure.
      */
     @OnContainerStart
-    public void calculateTopThreeHotels() throws IOException {
-        try {
-            System.out.println("FUCK1");
-            log.info("Starting to calculate our result");
+    public void calculateTopThreeHotels() {
+        Path path = new Path(filePath);
+        try (FileSystem fs = FileSystem.get(configuration);
+             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)))) {
 
-            String fileString = "/user/test.csv";
-
-            List<Line> lines = new ArrayList<>();
-            Path path = new Path(fileString);
-
-            try (FileSystem fs = FileSystem.get(configuration);
-                 BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(path)))) {
-
-                String line = br.readLine();
-                while (line != null) {
-                    lines.add(getLine(line));
-                    line = br.readLine();
-                    if(lines.size() % 100 == 0) {
-                        log.info("Time of 100, size = " + lines.size());
-                    }
-                }
-                log.info("Got done reading the dataset");
-                System.out.println("FUCK2");
-            }
-
-            List<Map.Entry<Line, Long>> results = TopThreeCalculator.calculateTopThree(lines);
-            results.forEach(entry -> log.info(entry.getValue()));
-
-            log.info("Got done processing the dataset");
-            System.out.println("FUCK3");
-        } catch (Exception e) {
-            log.info("YOUR FUCKING EXCEPTION", e);
+            List<Map.Entry<Line, Long>> results = TopThreeCalculator.calculateTopThree(bufferedReader.lines());
+            results.forEach(e -> log.info("Answer: " + e.getValue()));
+        } catch (IOException e) {
+            log.error("Does your file exist?", e);
         }
     }
 }

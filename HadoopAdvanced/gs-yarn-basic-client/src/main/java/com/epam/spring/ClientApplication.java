@@ -10,14 +10,15 @@ import org.springframework.yarn.client.YarnClient;
 @EnableAutoConfiguration
 public class ClientApplication {
 
-	/**
-	 * Entry point into the yarn client.
-	 * @param args cmd args.
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(ClientApplication.class, args)
-			.getBean(YarnClient.class)
-			.submitApplication();
-	}
+    /**
+     * Entry point into the yarn client.
+     *
+     * @param args cmd args.
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(ClientApplication.class, args)
+                .getBean(YarnClient.class)
+                .submitApplication();
+    }
 
 }

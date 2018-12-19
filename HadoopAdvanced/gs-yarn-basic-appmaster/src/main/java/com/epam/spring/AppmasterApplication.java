@@ -9,12 +9,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 @EnableAutoConfiguration
 public class AppmasterApplication {
 
-	/**
-	 * Entry point into the application master.
-	 * @param args cmd args.
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(AppmasterApplication.class, args);
-	}
+    /**
+     * Entry point into the application master.
+     *
+     * @param args cmd args.
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(AppmasterApplication.class, args);
+    }
 
 }
