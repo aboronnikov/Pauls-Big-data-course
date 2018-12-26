@@ -1,3 +1,4 @@
+import com.epam.udtf.ParseUserAgentUDTF;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.io.parquet.serde.ArrayWritableObjectInspector;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -11,6 +12,7 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Test for the ParseUserAgentUDTF class.
+ * Test for the com.epam.udtf.ParseUserAgentUDTF class.
  */
 public class ParseUserAgentUDTFTest {
 
@@ -95,12 +97,17 @@ public class ParseUserAgentUDTFTest {
     private ArrayWritableObjectInspector objectInspector;
 
     /**
+     * Object inspector, used by our tests.
+     */
+    private ArrayWritableObjectInspector badObjectInspector;
+
+    /**
      * Test collector instance used by our tests.
      */
     private TestCollector testCollector;
 
     /**
-     * ParseUserAgentUDTF instance, used by our tests.
+     * com.epam.udtf.ParseUserAgentUDTF instance, used by our tests.
      */
     private ParseUserAgentUDTF parseUserAgentUDTF;
 
@@ -122,6 +129,19 @@ public class ParseUserAgentUDTFTest {
     }
 
     /**
+     * Sets up the bad object inspector.
+     */
+    @Before
+    public void prepareBadObjectInspector() {
+        StructTypeInfo structTypeInfo = new StructTypeInfo();
+        ArrayList<String> fieldNames = new ArrayList<>();
+        structTypeInfo.setAllStructFieldNames(fieldNames);
+        ArrayList<TypeInfo> typeInfos = new ArrayList<>();
+        structTypeInfo.setAllStructFieldTypeInfos(typeInfos);
+        badObjectInspector = new ArrayWritableObjectInspector(structTypeInfo);
+    }
+
+    /**
      * Sets up the test collector.
      */
     @Before
@@ -139,11 +159,11 @@ public class ParseUserAgentUDTFTest {
     }
 
     /**
-     * This method tests the initialize method from ParseUserAgentUDTF.
+     * This method tests the initialize method from com.epam.udtf.ParseUserAgentUDTF.
      *
      * @throws UDFArgumentException in case when the input is bad.
      */
-    @org.junit.Test
+    @Test
     public void initialize() throws UDFArgumentException {
         StructObjectInspector structObjectInspector = parseUserAgentUDTF.initialize(objectInspector);
 
@@ -166,11 +186,21 @@ public class ParseUserAgentUDTFTest {
     }
 
     /**
-     * This method tests the process method from ParseUserAgentUDTF.
+     * Tests initialize in the case of bad arguments.
+     *
+     * @throws UDFArgumentException in case when the input is bad.
+     */
+    @Test(expected = UDFArgumentException.class)
+    public void badInitialize() throws UDFArgumentException {
+        parseUserAgentUDTF.initialize(badObjectInspector);
+    }
+
+    /**
+     * This method tests the process method from com.epam.udtf.ParseUserAgentUDTF.
      *
      * @throws HiveException an exception encountered during any hive operations.
      */
-    @org.junit.Test
+    @Test
     public void process() throws HiveException {
         Object[] objectsToProcess = {"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0),gzip(gfe),gzip(gfe) "};
         parseUserAgentUDTF.process(objectsToProcess);

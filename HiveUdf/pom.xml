@@ -31,7 +31,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>ParseUserAgentUDTF</mainClass>
+                            <mainClass>com.epam.udtf.ParseUserAgentUDTF</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -53,11 +53,48 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>ParseUserAgentUDTF</mainClass>
+                            <mainClass>com.epam.udtf.ParseUserAgentUDTF</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/com/epam/spring/*</exclude>
+                                <exclude>**/ClientApplication.*</exclude>
+                                <exclude>**/ContainerApplication.*</exclude>
+                                <exclude>**/JobPojo.*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-code-coverage-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+            </plugin>
+
+
         </plugins>
     </build>
 

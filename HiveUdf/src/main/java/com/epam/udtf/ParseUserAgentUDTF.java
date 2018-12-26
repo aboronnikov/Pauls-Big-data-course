@@ -1,3 +1,5 @@
+package com.epam.udtf;
+
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -24,8 +26,7 @@ public class ParseUserAgentUDTF extends GenericUDTF {
     @Override
     public StructObjectInspector initialize(StructObjectInspector argOIs) throws UDFArgumentException {
         checkArguments(argOIs);
-        StructObjectInspector newInspector = constructNewObjectInspector();
-        return newInspector;
+        return constructNewObjectInspector();
     }
 
     /**
@@ -36,17 +37,19 @@ public class ParseUserAgentUDTF extends GenericUDTF {
      */
     private void checkArguments(StructObjectInspector argOIs) throws UDFArgumentException {
         List<? extends StructField> inputFields = argOIs.getAllStructFieldRefs();
-        if (inputFields.size() != 1) {
-            throw new UDFArgumentException("ParseUserAgentUDTF() takes exactly one argument");
+
+        final int ONE_ELEMENT = 1;
+        if (inputFields.size() != ONE_ELEMENT) {
+            throw new UDFArgumentException("com.epam.udtf.ParseUserAgentUDTF() takes exactly one argument");
         }
 
         final int FIRST_INSPECTOR = 0;
-        ObjectInspector UDTFInputOI = inputFields.get(FIRST_INSPECTOR).getFieldObjectInspector();
-        PrimitiveObjectInspector primitiveUDTFOI = (PrimitiveObjectInspector) UDTFInputOI;
+        ObjectInspector udtfInputOI = inputFields.get(FIRST_INSPECTOR).getFieldObjectInspector();
+        PrimitiveObjectInspector primitiveUDTFOI = (PrimitiveObjectInspector) udtfInputOI;
 
-        if (UDTFInputOI.getCategory() != ObjectInspector.Category.PRIMITIVE
+        if (udtfInputOI.getCategory() != ObjectInspector.Category.PRIMITIVE
                 && primitiveUDTFOI.getPrimitiveCategory() != PrimitiveObjectInspector.PrimitiveCategory.STRING) {
-            throw new UDFArgumentException("ParseUserAgentUDTF() takes a string as a parameter");
+            throw new UDFArgumentException("com.epam.udtf.ParseUserAgentUDTF() takes a string as a parameter");
         }
     }
 
@@ -91,5 +94,6 @@ public class ParseUserAgentUDTF extends GenericUDTF {
      */
     @Override
     public void close() throws HiveException {
+        // no implementation needed.
     }
 }
