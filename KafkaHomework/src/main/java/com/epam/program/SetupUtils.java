@@ -1,8 +1,6 @@
 package com.epam.program;
 
-import com.epam.producer.BoundedTwitterProducer;
 import com.epam.producer.TwitterProducer;
-import com.epam.producer.UnboundedTwitterProducer;
 import com.linkedin.paldb.api.PalDB;
 import com.linkedin.paldb.api.StoreReader;
 import com.twitter.hbc.ClientBuilder;
@@ -86,14 +84,13 @@ public final class SetupUtils {
     /**
      * Sets up a TwitterProducer to populate Kafka with tweets.
      *
-     * @param howManyMessages how many messages to accept, -1 for unbounded.
      * @param passStore       path to the pathstore.
      * @param keywords        hashtags to use as filter.
      * @param bootstrapUrl    bootstrap url.
      * @param topic           topic name.
      * @return returns an appropriate TwitterProducer for the task.
      */
-    public static TwitterProducer setupTwitterProducer(int howManyMessages, String passStore, List<String> keywords, String bootstrapUrl, String topic) {
+    public static TwitterProducer setupTwitterProducer(String passStore, List<String> keywords, String bootstrapUrl, String topic) {
 
         BlockingQueue<String> queue = new LinkedBlockingQueue<>();
         Client client = SetupUtils.setupClient(keywords, passStore, queue);
@@ -102,11 +99,6 @@ public final class SetupUtils {
         Properties properties = SetupUtils.setupProducerConfig(bootstrapUrl);
         Producer<String, String> kafkaProducer = new KafkaProducer<>(properties);
 
-        final int UNBOUNDED = -1;
-        if (howManyMessages == UNBOUNDED) {
-            return new UnboundedTwitterProducer(queue, topic, kafkaProducer, client);
-        } else {
-            return new BoundedTwitterProducer(howManyMessages, queue, topic, kafkaProducer, client);
-        }
+        return new TwitterProducer(queue, topic, kafkaProducer, client);
     }
 }

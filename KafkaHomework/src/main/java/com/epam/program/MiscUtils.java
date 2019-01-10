@@ -74,18 +74,11 @@ public final class MiscUtils {
      * @param value json string.
      * @return location value.
      */
-    public static String extractLocation(String value) {
-        return JsonPath.parse(value).read("$.user.location");
-    }
-
-    /**
-     * Returns true if container is not null and contains containee, otherwise return false.
-     *
-     * @param container container string.
-     * @param containee containee strings that is desired to be found in container.
-     * @return true or false as described above.
-     */
-    public static boolean safeContains(String container, String containee) {
-        return container != null && container.contains(containee);
+    public static @Nonnull
+    String extractLocation(String value) {
+        String result = JsonPath
+                .parse(value)
+                .read("$.user.location");
+        return result == null ? "" : result;
     }
 }

@@ -45,28 +45,25 @@ public class TwitterClient {
             String url = CmdUtils.getBootstrapUrl(commandLine);
             String passStore = CmdUtils.getPassStore(commandLine);
             List<String> keywords = CmdUtils.getKeywords(commandLine);
-            int howManyMessages = CmdUtils.getHowManyMessages(commandLine);
 
-            writeToKafkaFromTwitter(topic, url, passStore, keywords, howManyMessages);
+            writeToKafkaFromTwitter(topic, url, passStore, keywords);
         }
     }
 
     /**
      * Writes to kafka using bounded or unbounded producer.
      *
-     * @param topic           topic to write into.
-     * @param bootstrapUrl    bootstrap server url.
-     * @param passStore       passStore that keeps keys.
-     * @param keywords        keywords to look for in tweets.
-     * @param howManyMessages how many messages to consumer, -1 for unbounded.
+     * @param topic        topic to write into.
+     * @param bootstrapUrl bootstrap server url.
+     * @param passStore    passStore that keeps keys.
+     * @param keywords     keywords to look for in tweets.
      */
     private static void writeToKafkaFromTwitter(String topic,
                                                 String bootstrapUrl,
                                                 String passStore,
-                                                List<String> keywords,
-                                                int howManyMessages) {
+                                                List<String> keywords) {
         try (TwitterProducer twitterProducer =
-                     SetupUtils.setupTwitterProducer(howManyMessages, passStore, keywords, bootstrapUrl, topic)) {
+                     SetupUtils.setupTwitterProducer(passStore, keywords, bootstrapUrl, topic)) {
             twitterProducer.run();
         }
     }

@@ -38,7 +38,6 @@ public final class CmdUtils {
             .addOption(URL, HAS_ARG, "Bootstrap server url. Required.")
             .addOption(PASS_STORE, HAS_ARG, "Password store. Required.")
             .addOption(KEYWORDS, HAS_ARG, "Keywords to search. Required.")
-            .addOption(HOW_MANY_MESSAGES, HAS_ARG, "How many messages to consume from twitter. Required.")
             .addOption(HELP, NO_ARG, "Help. Optional.");
 
     /**
@@ -51,21 +50,6 @@ public final class CmdUtils {
     public static CommandLine parseArgs(String[] args) throws ParseException {
         PosixParser parser = new PosixParser();
         return parser.parse(OPTIONS, args);
-    }
-
-    /**
-     * Extracts the number of messages to consume as an int.
-     *
-     * @param commandLine a CommandLine object.
-     * @return number of messages to consume as an int.
-     * @throws ParseException in case this arg is not present.
-     */
-    public static int getHowManyMessages(CommandLine commandLine) throws ParseException {
-        String numberOfMessages = commandLine.getOptionValue(HOW_MANY_MESSAGES);
-        if (numberOfMessages == null) {
-            throw new ParseException("-howManyMessages must be provided.");
-        }
-        return Integer.parseInt(numberOfMessages);
     }
 
     /**

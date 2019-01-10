@@ -14,15 +14,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Tests the bounded producer.
+ * Tests the unbounded producer.
  */
-public class BoundedTwitterProducerTest {
+public class TwitterProducerTest {
 
     /**
-     * Sets up the prelims.
+     * Sets the prelims.
      */
     @Before
     public void setUp() {
@@ -50,25 +51,28 @@ public class BoundedTwitterProducerTest {
     private TestProducer producer;
     private Client client;
     private String topic = "hadoop";
-    private int howManyMessages = 3;
 
     /**
      * Tests the main method.
-     *
-     * @throws InterruptedException exception from the blocking queue, which is actually ignored.
      */
     @Test
-    public void run() throws InterruptedException {
-        TwitterProducer twitterProducer = new BoundedTwitterProducer(howManyMessages, queue, topic, producer, client);
-        twitterProducer.run();
+    public void run() {
+        try (TwitterProducer twitterProducer = new TwitterProducer(queue, topic, producer, client)) {
+            CompletableFuture.runAsync(twitterProducer::run);
 
-        List<String> partitionZeroData = producer.getPartitionData(0);
-        List<String> partitionOneData = producer.getPartitionData(1);
+            // This loop is here to wait until the producer receives our 3 test messages.
+            // If we don't wait long enough, the results won't match with what we expect.
+            while (producer.getEntryCount() < 3) {
+            }
 
-        List<String> expectedPartitionZeroData = Collections.singletonList(TestData.TEST2);
-        List<String> expectedPartitionOneData = Arrays.asList(TestData.TEST1, TestData.TEST3);
+            List<String> partitionZeroData = producer.getPartitionData(0);
+            List<String> partitionOneData = producer.getPartitionData(1);
 
-        Assert.assertEquals(expectedPartitionZeroData, partitionZeroData);
-        Assert.assertEquals(expectedPartitionOneData, partitionOneData);
+            List<String> expectedPartitionZeroData = Collections.singletonList(TestData.TEST2);
+            List<String> expectedPartitionOneData = Arrays.asList(TestData.TEST1, TestData.TEST3);
+
+            Assert.assertEquals(expectedPartitionZeroData, partitionZeroData);
+            Assert.assertEquals(expectedPartitionOneData, partitionOneData);
+        }
     }
 }
