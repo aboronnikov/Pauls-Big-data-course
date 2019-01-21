@@ -42,9 +42,22 @@ object FileSystemExtensions {
      * @param basePath path to storage directory.
      * @param path     path from storage directory containing partition directories.
      */
-    def removePathIfExists(basePath: String, path: String): Unit = if (fileSystem.doesPathExist(basePath, path)) {
+    private def removePathIfExists(basePath: String, path: String): Unit = if (fileSystem.doesPathExist(basePath, path)) {
       val pathObject = new Path(basePath + path)
-      fileSystem.delete(pathObject, true)
+      val isRecursive = true
+      fileSystem.delete(pathObject, isRecursive)
+    }
+
+    /**
+     * Removes paths on HDFS that correspond to given partitions.
+     *
+     * @param basePath   path to the data directory.
+     * @param partitions partition paths.
+     */
+    def removeCorrespondingPaths(basePath: String, partitions: Array[String]): Unit = {
+      partitions.foreach(path => {
+        removePathIfExists(basePath, path)
+      })
     }
   }
 

@@ -30,13 +30,16 @@ dependencyOverrides += "com.fasterxml.jackson.module" % "jackson-module-scala_2.
 libraryDependencies ++= Seq(
   "junit" % "junit" % "4.12" % Test,
   "org.scalatest" %% "scalatest" % "3.2.0-SNAP10" % Test,
-  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test
+  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
+  "org.apache.hadoop" % "hadoop-test" % "1.2.1" % Test
 )
+
+coverageEnabled := true
 
 scapegoatVersion in ThisBuild := "1.3.2"
 scalaBinaryVersion in ThisBuild := "2.11"
 
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case x => MergeStrategy.first
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
+  case x                           => MergeStrategy.first
 }

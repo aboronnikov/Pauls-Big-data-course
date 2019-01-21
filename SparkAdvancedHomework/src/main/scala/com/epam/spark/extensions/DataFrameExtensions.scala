@@ -25,21 +25,13 @@ object DataFrameExtensions {
    * @param df the dataframe being extended.
    */
   class RichDataFrame(df: DataFrame) {
-    /**
-     * Makes a dataframe union compatible. Otherwise the union operation won't work properly.
-     * More on this here:
-     *
-     * @see https://stackoverflow.com/questions/32705056/what-is-going-wrong-with-unionall-of-spark-dataframe
-     * @return a union compatible dataframe.
-     */
-    def unionCompatible: DataFrame = df.select("date", "hour", "hashTag", "userId", "cnt")
 
     /**
      * Eagerly persists this dataframe to disk memory (as opposed to lazily...).
      * Meaning the dataframe will be written to disk right away.
      * This is used in case you want to overwrite the data that will be in use while overwriting.
      *
-     * @return an eagerly persisted dataframe.
+     * @return an eagerly persisted DataFrame.
      */
     def persistEagerly: DataFrame = {
       val persisted = df.persist(StorageLevel.DISK_ONLY)

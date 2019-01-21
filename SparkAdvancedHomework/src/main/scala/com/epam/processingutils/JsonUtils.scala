@@ -2,7 +2,6 @@ package com.epam.processingutils
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.function.Function
 
 import com.epam.twittertrivia.TweetWithKeys
 import com.jayway.jsonpath.JsonPath
@@ -18,8 +17,9 @@ object JsonUtils {
    * @param tweetJson json string with tweet info.
    * @return returns a list of hashtags.
    */
-  private def extractHashtags(tweetJson: String): java.util.List[String] = {
-    JsonPath.parse(tweetJson).read("$.entities.hashtags[*].text")
+  private def extractHashtags(tweetJson: String): List[String] = {
+    val hashTags = JsonPath.parse(tweetJson).read[java.util.List[String]]("$.entities.hashtags[*].text")
+    getScalaList(hashTags)
   }
 
   /**
@@ -28,12 +28,34 @@ object JsonUtils {
    * @param tweetJson json string with tweet info.
    * @return date string.
    */
-  private def extractDate(tweetJson: String): String = {
-    JsonPath.parse(tweetJson).read("$.created_at")
+  private def extractDate(tweetJson: String): LocalDateTime = {
+    val dateTimeStr = JsonPath.parse(tweetJson).read[String]("$.created_at")
+    val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss ZZZ yyyy")
+    LocalDateTime.parse(dateTimeStr, formatter)
   }
 
+  /**
+   * Extracts the user id as a string from the tweet json.
+   *
+   * @param tweetJson json string with tweet info.
+   * @return user id string.
+   */
   private def extractUserId(tweetJson: String): String = {
-    JsonPath.parse(tweetJson).read("$.user.id_str")
+    JsonPath.parse(tweetJson).read[String]("$.user.id_str")
+  }
+
+  /**
+   * Helper class that converts a java.util.List to a scala List.
+   *
+   * @param list java.util.List to be converted.
+   * @return a scala List.
+   */
+  private def getScalaList(list: java.util.List[String]): List[String] = {
+    import scala.collection.JavaConverters._
+    list.stream()
+      .iterator()
+      .asScala
+      .toList
   }
 
   /**
@@ -42,28 +64,17 @@ object JsonUtils {
    * @param tweetJson json string with tweet info.
    * @return returns an object with stripped tweet information.
    */
-  def transformTweetStringIntoObject(tweetJson: String): List[TweetWithKeys] = {
+  def transformTweetStringIntoObjects(tweetJson: String): List[TweetWithKeys] = {
     import DateTimeExtensions._
 
-    import scala.collection.JavaConverters._
-    import scala.compat.java8.FunctionConverters._
+    val dateTime = extractDate(tweetJson)
+    val hashTags = extractHashtags(tweetJson)
+    val userId = extractUserId(tweetJson)
 
-    val dateTimeStr = JsonUtils.extractDate(tweetJson)
-    val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss ZZZ yyyy")
-    val dateTime = LocalDateTime.parse(dateTimeStr, formatter)
+    val date = dateTime.getDateStr
+    val hour = dateTime.getHourStr
 
-    val hashTags = JsonUtils.extractHashtags(tweetJson)
-
-    val userId = JsonUtils.extractUserId(tweetJson)
-
-    hashTags.stream()
-      .map[TweetWithKeys](((hashTag: String) => TweetWithKeys(dateTime.getDateStr(), dateTime.getHourStr(), hashTag, userId)).asJava)
-      .iterator()
-      .asScala
-      .toList
-  }
-
-  def funToFunction[InT, OutT](fun: InT => OutT): Function[InT, OutT] = new Function[InT, OutT] {
-    override def apply(t: InT): OutT = fun(t)
+    hashTags
+      .map(hashTag => TweetWithKeys(date, hour, hashTag, userId))
   }
 }

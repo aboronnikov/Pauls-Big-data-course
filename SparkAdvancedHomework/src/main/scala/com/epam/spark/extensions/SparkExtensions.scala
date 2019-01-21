@@ -3,11 +3,9 @@ package com.epam.spark.extensions
 import com.epam.processingutils.JsonUtils
 import com.epam.spark.extensions.DataFrameExtensions._
 import com.epam.spark.extensions.FileSystemExtensions._
-import com.epam.spark.extensions.RowExtensions._
-import com.epam.spark.extensions.SparkDataFrameExtensions._
 import org.apache.hadoop.fs.FileSystem
-import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.{Column, DataFrame, SaveMode, SparkSession}
 
 import scala.language.implicitConversions
 
@@ -15,18 +13,6 @@ import scala.language.implicitConversions
  * A library used to read, write, remove and combine dataframes.
  */
 object SparkExtensions {
-
-  /**
-   * This is the schema specifying all the fields we need to store into the hdfs.
-   */
-  val TweetSchema: StructType =
-    new StructType(Array(
-      StructField("date", StringType, nullable = true),
-      StructField("hour", StringType, nullable = true),
-      StructField("hashTag", StringType, nullable = true),
-      StructField("userId", StringType, nullable = true),
-      StructField("cnt", DoubleType, nullable = true)
-    ))
 
   /**
    * Pimp my library pattern.
@@ -53,111 +39,126 @@ object SparkExtensions {
      * @param format   the data format we are working with.
      * @return
      */
-    private def loadDFPartition(basePath: String, path: String, format: String): DataFrame = {
+    private def loadDFPartition(basePath: String,
+                                path: String,
+                                format: String,
+                                schema: StructType): DataFrame = {
       spark.read
-        .schema(TweetSchema)
+        .schema(schema)
         .format(format)
         .option("basePath", basePath)
         .load(path)
-        .unionCompatible
     }
 
     /**
-     * Reads the old dataframe from hdfs, to later merge it with the new dataframe, made up from kafka.
+     * Reads data from the HDFS into a dataframe. (I avoid using RAM here)
      *
-     * @param format   format.
-     * @param basePath path.
-     * @return dataframe, read from the hdfs.
+     * @param format     format that the data is stored in.
+     * @param basePath   path to the data directory.
+     * @param partitions partitions to be read from.
+     * @param fs         fileSystem object to use when check for path existence.
+     * @return DataFrame with the data from HDFS.
      */
-    def readOldDF(format: String, basePath: String, partitions: Array[String], fs: FileSystem): DataFrame = {
-      val df = partitions
+    def readDataFrameFromHDFS(format: String,
+                              basePath: String,
+                              partitions: Array[String],
+                              fs: FileSystem,
+                              schema: StructType): DataFrame = {
+      partitions
         .filter(path => fs.doesPathExist(basePath, path)) // drop unused paths.
-        .map(path => loadDFPartition(basePath, basePath + path, format)) // load corresponding df.
-        .fold(spark.emptyDF)(_.union(_)) // union dfs into one, returning an empty one, in case of no such dfs.
-      val persistedDF = df.persistEagerly
-      // remove partitions to be able to append later on
-      partitions.foreach(path => {
-        fs.removePathIfExists(basePath, path)
-      })
-      persistedDF
+        .map(path => loadDFPartition(basePath, basePath + path, format, schema)) // load the corresponding DataFrame.
+        .fold(spark.emptyTypedDataFrame(schema))(_.unionByName(_)) // union dfs, returning an empty one, in case of no dfs.
+        .persistEagerly // persist this dataframe to disk
     }
 
     /**
      * Reads kafka messages from a particular topic, starting at one offset and finishing at another.
      *
+     * 1) Read data from kafka.
+     *
+     * 2) Transform (using flatMap) a tweet with multiple hashtags into multiple tweets with just one hashtag,
+     * so, this hypothetical tweet: {message: "bla", hashtags: ["one", "two", "three"]}
+     * will be transformed into this array of tweets:
+     * [{message: "bla", hashtag: "one"}, {message: "bla", hashtag: "two"}, {message: "bla", hashtag: "three"}]
+     *
+     * 3) Tweets from Dataset[TweetWithKeys] are mapped into DataFrames with corresponding column names.
+     *
+     * 4) Then we group these tweets by "date", "hour", "hashTag", "userId" and tally them up.
+     *
      * @param bootstrapServer the url of the bootstrap server.
      * @param topicName       name of the topic to read from in kafka.
      * @param startingOffsets starting offsets of messages within the topic.
      * @param endingOffsets   ending offsets of messages within the topic.
-     * @return a dataframe containing read data.
+     * @return a DataFrame containing read data.
      */
-    def readNewDF(bootstrapServer: String,
-                  topicName: String,
-                  startingOffsets: String,
-                  endingOffsets: String): DataFrame = {
+    def readTweetDataFrameFromKafka(bootstrapServer: String,
+                                    topicName: String,
+                                    startingOffsets: String,
+                                    endingOffsets: String,
+                                    columnNames: Array[String],
+                                    countColumnName: String): DataFrame = {
+      import com.epam.spark.extensions.DataFrameReaderExtensions._
       import org.apache.spark.sql.functions.count
       import spark.implicits._
 
+      val columns = columnNames.toList.map(name => new Column(name))
       spark.read
-        .format("kafka")
-        .option("kafka.bootstrap.servers", bootstrapServer)
-        .option("subscribe", topicName)
-        .option("startingOffsets", startingOffsets)
-        .option("endingOffsets", endingOffsets)
-        .load()
-        .selectExpr("CAST(value AS String)")
-        .as[String]
-        .flatMap(value => JsonUtils.transformTweetStringIntoObject(value))
+        .fromKafka(spark, bootstrapServer, topicName, startingOffsets, endingOffsets)
+        .flatMap(value => JsonUtils.transformTweetStringIntoObjects(value))
         .map(tweet => (tweet.date, tweet.hour, tweet.hashTag, tweet.userId))
-        .toDF("date", "hour", "hashTag", "userId")
-        .groupBy("date", "hour", "hashTag", "userId")
-        .agg(count("*").alias("cnt"))
+        .toDF(columnNames: _*)
+        .groupBy(columns: _*)
+        .agg(count("*").alias(countColumnName))
     }
 
     /**
-     * Appends the rows of one dataframe to another.
+     * Merges the old data DataFrame with the new data one.
+     *
+     * 1) Appends the rows of one dataframe to another.
+     *
+     * 2) Groups by "date", "hour", "hashTag", "userId"
+     *
+     * 3) Sums the old counts with the new ones.
      *
      * @param oldDF one dataframe (e.g. the one you read from hdfs)
      * @param newDF another dataframe (e.g. the one you read from kafka)
      * @return a combined dataframe with rows of one dataframe appended to the other.
      */
-    def mergeRunningTotals(oldDF: DataFrame, newDF: DataFrame): DataFrame = {
+    def mergeRunningTotals(oldDF: DataFrame, newDF: DataFrame, groupByColumns: Array[String], countColumnName: String): DataFrame = {
       import org.apache.spark.sql.functions.sum
-      val unified = newDF.unionCompatible.union(oldDF.unionCompatible)
+      val unified = newDF.unionByName(oldDF)
+      val typedColumns = groupByColumns.toList.map(name => new Column(name))
       unified
-        .groupBy("date", "hour", "hashTag", "userId")
-        .agg(sum("cnt").alias("cnt"))
-    }
-
-    /**
-     * Extract paths that we will need to use to load data from the HDFS.
-     *
-     * @param df the dataframe just read from kafka.
-     * @return an array on paths.
-     */
-    def extractPaths(df: DataFrame): Array[String] = {
-      df
-        .select("date", "hour", "hashTag", "userId")
-        .rdd
-        .map(_.extractValueString)
-        .collect() // collect here is done on purpose
+        .groupBy(typedColumns: _*)
+        .agg(sum(countColumnName).alias(countColumnName))
     }
 
     /**
      * Writes a particular dataframe to the specified path in the specified format.
      *
-     * @param dataFrame dataframe to write into the hdfs.
-     * @param path      path to write this dataframe to.
-     * @param format    format in which to write this dataframe into the hdfs.
+     * @param dataFrame  dataframe to write into the hdfs.
+     * @param path       path to write this dataframe to.
+     * @param format     format in which to write this dataframe into the hdfs.
+     * @param partitions partitions to be used when writing these data to the HDFS
      */
-    def writeToHDFS(dataFrame: DataFrame, path: String, format: String): Unit = {
+    def writeDataFrameToHDFS(dataFrame: DataFrame, path: String, format: String, partitions: Array[String], saveMode: SaveMode): Unit = {
       dataFrame
         .write
-        .mode(SaveMode.Append)
-        .partitionBy("date", "hour", "hashTag", "userId")
-        .option("header", "true")
+        .mode(saveMode)
+        .partitionBy(partitions: _*)
         .format(format)
         .save(path)
+    }
+
+    /**
+     * A shortcut method to create an dataframe with twitter schema.
+     *
+     * @param schema schema of the DataFrame to be created.
+     * @return empty DataFrame with the specified schema.
+     */
+    def emptyTypedDataFrame(schema: StructType): DataFrame = {
+      val emptyRDD = spark.emptyDataFrame.rdd
+      spark.createDataFrame(emptyRDD, schema)
     }
   }
 

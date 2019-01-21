@@ -1,6 +1,6 @@
 package com.epam.processingutils
 
-import org.apache.commons.cli.{CommandLine, HelpFormatter, Options, PosixParser}
+import org.apache.commons.cli._
 
 /**
  * Command line utilities to parse command line args or print help.
@@ -28,12 +28,12 @@ object CmdUtils {
    * Options constant, comprises all the required options to be specified on the command line.
    */
   private val Options: Options = new Options()
-    .addOption(Format, Format, HasArg, "Format to write in.")
-    .addOption(Path, Path, HasArg, "Path to write into.")
-    .addOption(BootstrapServer, BootstrapServer, HasArg, "Bootstrap server url.")
-    .addOption(Topic, Topic, HasArg, "Topic name.")
-    .addOption(StartingOffsets, StartingOffsets, HasArg, "Starting offsets.")
-    .addOption(EndingOffsets, EndingOffsets, HasArg, "Ending offsets.")
+    .addOption(Format, HasArg, "Format to write in.")
+    .addOption(Path, HasArg, "Path to write into.")
+    .addOption(BootstrapServer, HasArg, "Bootstrap server url.")
+    .addOption(Topic, HasArg, "Topic name.")
+    .addOption(StartingOffsets, HasArg, "Starting offsets.")
+    .addOption(EndingOffsets, HasArg, "Ending offsets.")
 
   /**
    * Parses command line arguments into a command line object.
@@ -43,7 +43,8 @@ object CmdUtils {
    */
   def parse(args: Array[String]): CommandLine = {
     val parser = new PosixParser
-    parser.parse(Options, args)
+    val cmdLine = parser.parse(Options, args)
+    checkArgumentCorrectness(cmdLine)
   }
 
   /**
@@ -51,6 +52,27 @@ object CmdUtils {
    */
   def printHelp(): Unit = {
     val helpFormatter = new HelpFormatter
-    helpFormatter.printHelp("TopicIngester", Options)
+    helpFormatter.printHelp("TopicDataIngester", Options)
+  }
+
+  /**
+   * This method is a validity filter for cmd argument.
+   *
+   * @param cmdLine CommandLine object.
+   * @return The same CommandLine object if it passes validity.
+   */
+  private def checkArgumentCorrectness(cmdLine: CommandLine): CommandLine = {
+    val correctnessFlag =
+      cmdLine.hasOption(Format) &&
+        cmdLine.hasOption(Path) &&
+        cmdLine.hasOption(BootstrapServer) &&
+        cmdLine.hasOption(Topic) &&
+        cmdLine.hasOption(StartingOffsets) &&
+        cmdLine.hasOption(EndingOffsets)
+
+    if (!correctnessFlag) {
+      throw new ParseException("You didn't specify all arguments.")
+    }
+    cmdLine
   }
 }
