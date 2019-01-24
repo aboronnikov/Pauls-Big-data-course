@@ -9,7 +9,8 @@ lazy val root = Project(id = "root", base = file(".")) aggregate(
   hdfs,
   sparkTask1,
   sparkTask2,
-  sparkTask3
+  sparkTask3,
+  advancedStreaming
 )
 
 lazy val streamingProducer = Project(id = "streamingProducer", base = file("StreamingProducer"))
@@ -18,6 +19,7 @@ lazy val hdfs = Project(id = "hdfs", base = file("HDFS"))
 lazy val sparkTask1 = Project(id = "sparkTask1", base = file("SparkTask1"))
 lazy val sparkTask2 = Project(id = "sparkTask2", base = file("SparkTask2"))
 lazy val sparkTask3 = Project(id = "sparkTask3", base = file("SparkTask3"))
+lazy val advancedStreaming = Project(id = "advancedStreaming", base = file("AdvancedSparkStreaming"))
 
 coverageEnabled := true
 
