@@ -1,0 +1,67 @@
+          
+            Log Type: stdout
+          
+            Log Upload Time: Mon Jan 28 15:14:24 +0000 2019
+          
+            Log Length: 82405
+          
+            Showing 4096 bytes of 82405 total. Click 
+            here
+             for the full log.
+          solr:
+CDH_HCAT_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hive-hcatalog:
+CDH_OOZIE_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/oozie:
+STDOUT_LOGFILE_ENV=/yarn/container-logs/application_1548680422954_0028/container_1548680422954_0028_01_000002/stdout:
+CDH_SENTRY_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/sentry:
+YARN_ROOT_LOGGER=INFO,RFA:
+CONF_DIR=/run/cloudera-scm-agent/process/2998-yarn-NODEMANAGER:
+LANG=en_US.UTF-8:
+NM_HOST=ECSC00A02A04.epam.com:
+HADOOP_LIBEXEC_DIR=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop/libexec:
+HADOOP_CLASSPATH=/usr/share/cmf/lib/plugins/event-publish-5.12.2-shaded.jar:/usr/share/cmf/lib/plugins/tt-instrumentation-5.12.2.jar:
+IS_KERBERIZED=false:
+CGROUP_ROOT_MEMORY=/sys/fs/cgroup/memory:
+YARN_LOG_DIR=/var/log/hadoop-yarn:
+CGROUP_GROUP_CPU=:
+ORACLE_HOME=/usr/share/oracle/instantclient:
+CDH_SQOOP2_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/sqoop2:
+HADOOP_COMMON_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop:
+CDH_HIVE_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hive:
+CDH_KMS_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-kms:
+NM_HTTP_PORT=8042:
+CDH_IMPALA_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/impala:
+NM_LOCAL_DIRS=/yarn/nm:
+NM_PORT=8041:
+YARN_NODEMANAGER_OPTS=-Xms52428800 -Xmx52428800 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSParallelRemarkEnabled -Dlibrary.leveldbjni.path=/run/cloudera-scm-agent/process/2998-yarn-NODEMANAGER -Dhadoop.event.appender=,EventCatcher -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/yarn_yarn-NODEMANAGER-35db0f13a90a76851269c5789b37ddda_pid3286.hprof -XX:OnOutOfMemoryError=/usr/lib64/cmf/service/common/killparent.sh:
+USER=cloudera-scm:
+CLASSPATH=/yarn/nm/usercache/cloudera-scm/appcache/application_1548680422954_0028/container_1548680422954_0028_01_000002:/etc/hadoop/conf.cloudera.yarn:/run/cloudera-scm-agent/process/2998-yarn-NODEMANAGER:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop/lib/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-hdfs/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-hdfs/lib/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-yarn/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-yarn/lib/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-mapreduce/*:/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-mapreduce/lib/*::job.jar/job.jar:job.jar/classes/:job.jar/lib/*:/yarn/nm/usercache/cloudera-scm/appcache/application_1548680422954_0028/container_1548680422954_0028_01_000002/*:
+CDH_HADOOP_BIN=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop/bin/hadoop:
+CDH_MR1_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-0.20-mapreduce:
+HADOOP_TOKEN_FILE_LOCATION=/yarn/nm/usercache/cloudera-scm/appcache/application_1548680422954_0028/container_1548680422954_0028_01_000002/container_tokens:
+CM_STATUS_CODES=STATUS_NONE HDFS_DFS_DIR_NOT_EMPTY HBASE_TABLE_DISABLED HBASE_TABLE_ENABLED JOBTRACKER_IN_STANDBY_MODE YARN_RM_IN_STANDBY_MODE:
+CDH_YARN_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/hadoop-yarn:
+SEARCH_HOME=/opt/cloudera/parcels/CDH-5.12.2-1.cdh5.12.2.p0.4/lib/search:
+XDG_RUNTIME_DIR=/run/user/996:
+HOME=/home/:
+MALLOC_ARENA_MAX=4:
+=================================================================
+
+>>> Invoking Shell command line now >>
+
+Exit code of the Shell command 0
+<<< Invocation of Shell command completed <<<
+
+
+<<< Invocation of Main class completed <<<
+
+
+Oozie Launcher, capturing output data:
+=======================
+
+
+=======================
+
+Oozie Launcher, uploading action data to HDFS sequence file: hdfs://ecsc00a022c6.epam.com:8020/user/cloudera-scm/oozie-clou/0000013-190128130126308-oozie-clou-W/shell-5c07--shell/action-data.seq
+Successfully reset security manager from org.apache.oozie.action.hadoop.LauncherSecurityManager@3af17be2 to null
+
+Oozie Launcher ends
