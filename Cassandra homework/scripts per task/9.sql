@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM killervideos.videos;

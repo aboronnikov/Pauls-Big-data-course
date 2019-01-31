@@ -1,0 +1,1 @@
+ALTER TABLE killervideos.videos ADD encoding frozen<video_encoding>;

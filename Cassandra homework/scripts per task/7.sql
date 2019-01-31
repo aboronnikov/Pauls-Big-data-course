@@ -1,0 +1,1 @@
+COPY killervideos.videos FROM '/home/pavel_orekhov/labwork/exercise-2/videos.csv' WITH HEADER=true;

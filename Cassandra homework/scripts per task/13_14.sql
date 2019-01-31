@@ -1,0 +1,1 @@
+COPY killervideos.videos_by_title_year FROM '/home/pavel_orekhov/labwork/exercise-3/videos_by_title_year.csv' WITH HEADER=true;

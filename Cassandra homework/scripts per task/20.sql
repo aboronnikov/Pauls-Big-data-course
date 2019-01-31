@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM killervideos.videos_by_tag_year;
