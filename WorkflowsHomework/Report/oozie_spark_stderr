@@ -1,0 +1,44 @@
+            Log Upload Time: Mon Jan 28 15:14:07 +0000 2019
+          
+            Log Length: 124349
+          
+            Showing 4096 bytes of 124349 total. Click 
+            here
+             for the full log.
+          ms on ecsc00a022c6.epam.com (executor 2) (192/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Starting task 194.0 in stage 2.0 (TID 196, ecsc00a02339.epam.com, executor 1, partition 194, PROCESS_LOCAL, 4737 bytes)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 192.0 in stage 2.0 (TID 194) in 49 ms on ecsc00a02339.epam.com (executor 1) (193/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Starting task 195.0 in stage 2.0 (TID 197, ecsc00a022c6.epam.com, executor 2, partition 195, PROCESS_LOCAL, 4737 bytes)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 193.0 in stage 2.0 (TID 195) in 48 ms on ecsc00a022c6.epam.com (executor 2) (194/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Starting task 196.0 in stage 2.0 (TID 198, ecsc00a02339.epam.com, executor 1, partition 196, PROCESS_LOCAL, 4737 bytes)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 194.0 in stage 2.0 (TID 196) in 43 ms on ecsc00a02339.epam.com (executor 1) (195/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Starting task 197.0 in stage 2.0 (TID 199, ecsc00a022c6.epam.com, executor 2, partition 197, PROCESS_LOCAL, 4737 bytes)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 195.0 in stage 2.0 (TID 197) in 40 ms on ecsc00a022c6.epam.com (executor 2) (196/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Starting task 198.0 in stage 2.0 (TID 200, ecsc00a02339.epam.com, executor 1, partition 198, PROCESS_LOCAL, 4737 bytes)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 196.0 in stage 2.0 (TID 198) in 47 ms on ecsc00a02339.epam.com (executor 1) (197/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Starting task 199.0 in stage 2.0 (TID 201, ecsc00a022c6.epam.com, executor 2, partition 199, PROCESS_LOCAL, 4737 bytes)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 197.0 in stage 2.0 (TID 199) in 36 ms on ecsc00a022c6.epam.com (executor 2) (198/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 199.0 in stage 2.0 (TID 201) in 34 ms on ecsc00a022c6.epam.com (executor 2) (199/200)
+19/01/28 15:13:58 INFO scheduler.TaskSetManager: Finished task 198.0 in stage 2.0 (TID 200) in 36 ms on ecsc00a02339.epam.com (executor 1) (200/200)
+19/01/28 15:13:58 INFO cluster.YarnScheduler: Removed TaskSet 2.0, whose tasks have all completed, from pool 
+19/01/28 15:13:58 INFO scheduler.DAGScheduler: ResultStage 2 (csv at Main.scala:25) finished in 10.627 s
+19/01/28 15:13:58 INFO scheduler.DAGScheduler: Job 1 finished: csv at Main.scala:25, took 11.313856 s
+19/01/28 15:13:59 INFO datasources.FileFormatWriter: Job null committed.
+19/01/28 15:13:59 INFO server.AbstractConnector: Stopped Spark@6d7cada5{HTTP/1.1,[http/1.1]}{0.0.0.0:4040}
+19/01/28 15:13:59 INFO ui.SparkUI: Stopped Spark web UI at http://10.6.195.165:4040
+19/01/28 15:13:59 INFO cluster.YarnClientSchedulerBackend: Interrupting monitor thread
+19/01/28 15:13:59 INFO cluster.YarnClientSchedulerBackend: Shutting down all executors
+19/01/28 15:13:59 INFO cluster.YarnSchedulerBackend$YarnDriverEndpoint: Asking each executor to shut down
+19/01/28 15:13:59 INFO cluster.SchedulerExtensionServices: Stopping SchedulerExtensionServices
+(serviceOption=None,
+ services=List(),
+ started=false)
+19/01/28 15:13:59 INFO cluster.YarnClientSchedulerBackend: Stopped
+19/01/28 15:13:59 INFO spark.MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+19/01/28 15:13:59 INFO memory.MemoryStore: MemoryStore cleared
+19/01/28 15:13:59 INFO storage.BlockManager: BlockManager stopped
+19/01/28 15:13:59 INFO storage.BlockManagerMaster: BlockManagerMaster stopped
+19/01/28 15:13:59 INFO scheduler.OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+19/01/28 15:13:59 INFO spark.SparkContext: Successfully stopped SparkContext
+19/01/28 15:13:59 INFO util.ShutdownHookManager: Shutdown hook called
+19/01/28 15:13:59 INFO util.ShutdownHookManager: Deleting directory /yarn/nm/usercache/cloudera-scm/appcache/application_1548680422954_0026/spark-eb1fe33a-16dc-46cc-8364-60876f8ce329

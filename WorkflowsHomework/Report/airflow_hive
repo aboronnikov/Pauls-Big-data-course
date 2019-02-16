@@ -1,0 +1,78 @@
+*** Reading local file: /root/airflow/logs/pavel4/create_hive_avro_table/2019-01-29T18:38:17.155086+00:00/1.log
+[2019-01-29 18:56:34,964] {models.py:1359} INFO - Dependencies all met for <TaskInstance: pavel4.create_hive_avro_table 2019-01-29T18:38:17.155086+00:00 [queued]>
+[2019-01-29 18:56:34,972] {models.py:1359} INFO - Dependencies all met for <TaskInstance: pavel4.create_hive_avro_table 2019-01-29T18:38:17.155086+00:00 [queued]>
+[2019-01-29 18:56:34,972] {models.py:1571} INFO - 
+--------------------------------------------------------------------------------
+Starting attempt 1 of 4
+--------------------------------------------------------------------------------
+
+[2019-01-29 18:56:34,985] {models.py:1593} INFO - Executing <Task(BashOperator): create_hive_avro_table> on 2019-01-29T18:38:17.155086+00:00
+[2019-01-29 18:56:34,986] {base_task_runner.py:118} INFO - Running: ['bash', '-c', 'airflow run pavel4 create_hive_avro_table 2019-01-29T18:38:17.155086+00:00 --job_id 257 --raw -sd DAGS_FOLDER/example_dags/pavel4.py --cfg_path /tmp/tmptyj41xge']
+[2019-01-29 18:56:36,093] {base_task_runner.py:101} INFO - Job 257: Subtask create_hive_avro_table [2019-01-29 18:56:36,091] {__init__.py:51} INFO - Using executor SequentialExecutor
+[2019-01-29 18:56:36,422] {base_task_runner.py:101} INFO - Job 257: Subtask create_hive_avro_table [2019-01-29 18:56:36,421] {models.py:273} INFO - Filling up the DagBag from /root/airflow/dags/example_dags/pavel4.py
+[2019-01-29 18:56:38,047] {base_task_runner.py:101} INFO - Job 257: Subtask create_hive_avro_table [2019-01-29 18:56:38,046] {cli.py:520} INFO - Running <TaskInstance: pavel4.create_hive_avro_table 2019-01-29T18:38:17.155086+00:00 [running]> on host ecsc00a02a05.epam.com
+[2019-01-29 18:56:38,064] {bash_operator.py:77} INFO - Tmp dir root location: 
+ /tmp
+[2019-01-29 18:56:38,064] {bash_operator.py:86} INFO - Exporting the following env vars:
+AIRFLOW_CTX_DAG_ID=pavel4
+AIRFLOW_CTX_TASK_ID=create_hive_avro_table
+AIRFLOW_CTX_EXECUTION_DATE=2019-01-29T18:38:17.155086+00:00
+AIRFLOW_CTX_DAG_RUN_ID=manual__2019-01-29T18:38:17.155086+00:00
+[2019-01-29 18:56:38,066] {bash_operator.py:100} INFO - Temporary script location: /tmp/airflowtmpxc7lco81/create_hive_avro_tableu01d8tkb
+[2019-01-29 18:56:38,066] {bash_operator.py:110} INFO - Running command: beeline -u jdbc:hive2://ecsc00a022c7.epam.com:10000/default -f /root/create_table.hql
+[2019-01-29 18:56:38,079] {bash_operator.py:119} INFO - Output:
+[2019-01-29 18:56:43,778] {bash_operator.py:123} INFO - scan complete in 2ms
+[2019-01-29 18:56:43,779] {bash_operator.py:123} INFO - Connecting to jdbc:hive2://ecsc00a022c7.epam.com:10000/default
+[2019-01-29 18:56:44,375] {bash_operator.py:123} INFO - Connected to: Apache Hive (version 1.1.0-cdh5.12.2)
+[2019-01-29 18:56:44,376] {bash_operator.py:123} INFO - Driver: Hive JDBC (version 1.1.0-cdh5.12.2)
+[2019-01-29 18:56:44,376] {bash_operator.py:123} INFO - Transaction isolation: TRANSACTION_REPEATABLE_READ
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - 0: jdbc:hive2://ecsc00a022c7.epam.com:10000/d> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> . . . . . . . . . . . . . . . . . . . . . . .> INFO  : Compiling command(queryId=cloudera-scm_20190129185656_be54e00b-84d1-4ac8-bf3a-0956b5b16040): CREATE EXTERNAL TABLE avro_hive_table
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - STORED AS INPUTFORMAT
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - LOCATION
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - '/user/pavel_orekhov/output-data'
+[2019-01-29 18:56:44,853] {bash_operator.py:123} INFO - TBLPROPERTIES
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - ('avro.schema.literal'='{
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "type" : "record",
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "name" : "topLevelRecord",
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "fields" : [ {
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "name" : "age",
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "type" : [ "string", "null" ]
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - }, {
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "name" : "count",
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - "type" : "long"
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - } ]
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - }')
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - INFO  : Semantic Analysis Completed
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - INFO  : Completed compiling command(queryId=cloudera-scm_20190129185656_be54e00b-84d1-4ac8-bf3a-0956b5b16040); Time taken: 0.199 seconds
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - INFO  : Concurrency mode is disabled, not creating a lock manager
+[2019-01-29 18:56:44,854] {bash_operator.py:123} INFO - INFO  : Executing command(queryId=cloudera-scm_20190129185656_be54e00b-84d1-4ac8-bf3a-0956b5b16040): CREATE EXTERNAL TABLE avro_hive_table
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - STORED AS INPUTFORMAT
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - LOCATION
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - '/user/pavel_orekhov/output-data'
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - TBLPROPERTIES
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - ('avro.schema.literal'='{
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "type" : "record",
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "name" : "topLevelRecord",
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "fields" : [ {
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "name" : "age",
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "type" : [ "string", "null" ]
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - }, {
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "name" : "count",
+[2019-01-29 18:56:44,855] {bash_operator.py:123} INFO - "type" : "long"
+[2019-01-29 18:56:44,856] {bash_operator.py:123} INFO - } ]
+[2019-01-29 18:56:44,856] {bash_operator.py:123} INFO - }')
+[2019-01-29 18:56:44,856] {bash_operator.py:123} INFO - INFO  : Starting task [Stage-0:DDL] in serial mode
+[2019-01-29 18:56:44,856] {bash_operator.py:123} INFO - INFO  : Completed executing command(queryId=cloudera-scm_20190129185656_be54e00b-84d1-4ac8-bf3a-0956b5b16040); Time taken: 0.078 seconds
+[2019-01-29 18:56:44,856] {bash_operator.py:123} INFO - INFO  : OK
+[2019-01-29 18:56:44,861] {bash_operator.py:123} INFO - No rows affected (0.399 seconds)
+[2019-01-29 18:56:44,884] {bash_operator.py:123} INFO - 0: jdbc:hive2://ecsc00a022c7.epam.com:10000/d> 0: jdbc:hive2://ecsc00a022c7.epam.com:10000/d>
+[2019-01-29 18:56:44,884] {bash_operator.py:123} INFO - Closing: 0: jdbc:hive2://ecsc00a022c7.epam.com:10000/default
+[2019-01-29 18:56:44,958] {bash_operator.py:127} INFO - Command exited with return code 0
+[2019-01-29 18:56:49,981] {logging_mixin.py:95} INFO - [2019-01-29 18:56:49,979] {jobs.py:2527} INFO - Task exited with return code 0
