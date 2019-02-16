@@ -1,9 +1,5 @@
 package com.epam.processingutils
 
-import org.apache.commons.cli.ParseException
-import org.junit.{Assert, Test}
-import org.scalatest.junit.JUnitSuite
-
 /**
  * Tests the command line utility class CmdUtils.
  */

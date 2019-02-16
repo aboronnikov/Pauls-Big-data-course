@@ -1,8 +1,5 @@
 package com.epam.processingutils
 
-import org.apache.spark.sql.DataFrame
-import program.TopicDataIngester.{Date, Hour}
-
 /**
  * Utility class for working with DataFrames.
  */

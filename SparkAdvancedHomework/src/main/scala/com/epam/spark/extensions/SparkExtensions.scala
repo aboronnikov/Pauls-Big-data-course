@@ -1,12 +1,5 @@
 package com.epam.spark.extensions
 
-import com.epam.processingutils.JsonUtils
-import com.epam.spark.extensions.DataFrameExtensions._
-import com.epam.spark.extensions.FileSystemExtensions._
-import org.apache.hadoop.fs.FileSystem
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Column, DataFrame, SaveMode, SparkSession}
-
 import scala.language.implicitConversions
 
 /**
@@ -97,9 +90,6 @@ object SparkExtensions {
                                     endingOffsets: String,
                                     columnNames: Array[String],
                                     countColumnName: String): DataFrame = {
-      import com.epam.spark.extensions.DataFrameReaderExtensions._
-      import org.apache.spark.sql.functions.count
-      import spark.implicits._
 
       val columns = columnNames.toList.map(name => new Column(name))
       spark.read
@@ -125,7 +115,6 @@ object SparkExtensions {
      * @return a combined dataframe with rows of one dataframe appended to the other.
      */
     def mergeRunningTotals(oldDF: DataFrame, newDF: DataFrame, groupByColumns: Array[String], countColumnName: String): DataFrame = {
-      import org.apache.spark.sql.functions.sum
       val unified = newDF.unionByName(oldDF)
       val typedColumns = groupByColumns.toList.map(name => new Column(name))
       unified

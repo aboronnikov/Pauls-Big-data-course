@@ -1,9 +1,5 @@
 package com.epam.processingutils
 
-import org.apache.spark.sql.SparkSession
-import org.junit.{Assert, Test}
-import org.scalatest.junit.JUnitSuite
-
 /**
  * Tests for the DataFrameUtils class
  */
@@ -17,8 +13,6 @@ class DataFrameUtilsTest extends JUnitSuite {
       .master("local[*]")
       .appName("Test")
       .getOrCreate()
-
-    import spark.implicits._
 
     val dataFrame = Seq(
       ("19 JANUARY", "15", "hashTag", "123", 1L),

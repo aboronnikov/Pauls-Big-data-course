@@ -1,8 +1,5 @@
 package com.epam.spark.extensions
 
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.storage.StorageLevel
-
 import scala.language.implicitConversions
 
 /**

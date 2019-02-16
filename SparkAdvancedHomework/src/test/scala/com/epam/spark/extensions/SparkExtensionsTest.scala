@@ -1,15 +1,9 @@
 package com.epam.spark.extensions
 
-import org.apache.spark.sql.SparkSession
-import org.junit.{Assert, Test}
-import org.scalatest.junit.JUnitSuite
-
 /**
  * Tests the SparkExtensions class.
  */
 class SparkExtensionsTest extends JUnitSuite {
-
-  import com.epam.spark.extensions.SparkExtensions._
 
   /**
    * Tests the mergeRunningTotals method, making sure that it merges our results properly.
@@ -21,8 +15,6 @@ class SparkExtensionsTest extends JUnitSuite {
       .master("local[*]")
       .appName("Test")
       .getOrCreate()
-
-    import spark.implicits._
 
     val df1 = Seq(
       ("19 JANUARY", "15", "hashTag", "123", 4L)
@@ -50,7 +42,6 @@ class SparkExtensionsTest extends JUnitSuite {
    */
   @Test
   def emptyRDDTest(): Unit = {
-    import com.epam.spark.extensions.SparkExtensions._
     val spark = SparkSession.builder()
       .master("local[*]")
       .appName("Test")

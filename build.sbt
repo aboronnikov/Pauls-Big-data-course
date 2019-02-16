@@ -10,6 +10,8 @@ lazy val root = Project(id = "root", base = file(".")) aggregate(
   sparkTask1,
   sparkTask2,
   sparkTask3,
+  advancedStreaming,
+  sparkTask3,
   sparkAdvanced
 )
 
@@ -20,6 +22,7 @@ lazy val sparkTask1 = Project(id = "sparkTask1", base = file("SparkTask1"))
 lazy val sparkTask2 = Project(id = "sparkTask2", base = file("SparkTask2"))
 lazy val sparkTask3 = Project(id = "sparkTask3", base = file("SparkTask3"))
 lazy val sparkAdvanced = Project(id = "sparkAdvanced", base = file("SparkAdvancedHomework"))
+lazy val advancedStreaming = Project(id = "advancedStreaming", base = file("AdvancedSparkStreaming"))
 
 coverageEnabled := true
 

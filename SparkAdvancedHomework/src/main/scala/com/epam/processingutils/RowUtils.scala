@@ -1,7 +1,5 @@
 package com.epam.processingutils
 
-import org.apache.spark.sql.Row
-
 /**
  * A utility class, providing extended functionality to the Row object.
  */

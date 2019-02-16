@@ -1,9 +1,5 @@
 package com.epam.processingutils
 
-import org.apache.spark.sql.Row
-import org.junit.{Assert, Test}
-import org.scalatest.junit.JUnitSuite
-
 /**
  * Tests the RowExtensions class.
  */

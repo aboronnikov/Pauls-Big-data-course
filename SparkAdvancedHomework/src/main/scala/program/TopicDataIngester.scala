@@ -1,14 +1,5 @@
 package program
 
-import com.epam.processingutils.{CmdUtils, DataFrameUtils}
-import com.epam.spark.extensions.FileSystemExtensions._
-import com.epam.spark.extensions.SparkExtensions._
-import org.apache.commons.cli.ParseException
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.FileSystem
-import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
-
 /**
  * Entry point class.
  * Reads the necessary command line arguments and utilizes the DataFrameProcessor class

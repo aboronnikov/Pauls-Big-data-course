@@ -1,7 +1,5 @@
 package com.epam.processingutils
 
-import org.apache.commons.cli._
-
 /**
  * Command line utilities to parse command line args or print help.
  */

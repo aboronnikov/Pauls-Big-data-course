@@ -1,7 +1,5 @@
 package com.epam.spark.extensions
 
-import org.apache.hadoop.fs.{FileSystem, Path}
-
 import scala.language.implicitConversions
 
 /**

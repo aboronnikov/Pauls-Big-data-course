@@ -3,9 +3,6 @@ package com.epam.processingutils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import com.epam.twittertrivia.TweetWithKeys
-import com.jayway.jsonpath.JsonPath
-
 /**
  * This class provides json utilities, to extract certain pieces of information from a tweet's json.
  */
@@ -65,7 +62,6 @@ object JsonUtils {
    * @return returns an object with stripped tweet information.
    */
   def transformTweetStringIntoObjects(tweetJson: String): List[TweetWithKeys] = {
-    import DateTimeExtensions._
 
     val dateTime = extractDate(tweetJson)
     val hashTags = extractHashtags(tweetJson)

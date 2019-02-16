@@ -1,7 +1,5 @@
 package com.epam.spark.extensions
 
-import org.apache.spark.sql.{DataFrameReader, Dataset, SparkSession}
-
 import scala.language.implicitConversions
 
 /**
@@ -41,7 +39,6 @@ object DataFrameReaderExtensions {
                   topicName: String,
                   startingOffsets: String,
                   endingOffsets: String): Dataset[String] = {
-      import spark.implicits._
       val kafkaMessage = dfReader
         .format("kafka")
         .option("kafka.bootstrap.servers", bootstrapServer)
