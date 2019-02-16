@@ -1,0 +1,1 @@
+SELECT title FROM killervideos.videos_by_tag_year WHERE tag = 'cql' AND added_year < 2015;

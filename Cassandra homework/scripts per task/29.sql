@@ -1,0 +1,1 @@
+COPY killervideos.videos(video_id,encoding) FROM '/home/pavel_orekhov/labwork/exercise-5/videos_encoding.csv' WITH HEADER = true;
