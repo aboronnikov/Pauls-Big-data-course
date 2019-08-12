@@ -1,7 +1,7 @@
 spring:
   hadoop:
-    fsUri: hdfs://ecsc00a022c6.epam.com:8020
-    resourceManagerHost: ecsc00a022c6.epam.com
+    fsUri: hdfs://sandbox-hdp.hortonworks.com:8020
+    resourceManagerHost: sandbox-hdp.hortonworks.com
   yarn:
     appName: gs-yarn-basic
     applicationDir: /app/gs-yarn-basic/
